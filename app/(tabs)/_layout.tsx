@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 
 import { HapticTab } from '@/components/haptic-tab';
@@ -44,6 +45,7 @@ const ProfileIcon = ({ color }: { color: string }) => (
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs
@@ -54,9 +56,9 @@ export default function TabLayout() {
           backgroundColor: 'white',
           borderTopWidth: 1,
           borderTopColor: '#E0E0E0',
-          paddingBottom: 30,
+          paddingBottom: Math.max(insets.bottom, 20),
           paddingTop: 10,
-          height: 90,
+          height: 60 + Math.max(insets.bottom, 20),
         },
         tabBarLabelStyle: {
           fontSize: 10,
