@@ -1,14 +1,23 @@
-import { StyleSheet, ScrollView, TouchableOpacity, View, Image } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
+import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+
+const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
+  const bannerImages = [
+    require('@/assets/images/xvv 1.png'),
+    require('@/assets/images/h1.png.png'),
+    require('@/assets/images/h2.png.png'),
+    require('@/assets/images/h3.png.png'),
+  ];
+
   const videos = [
-    { id: 1, title: '#joy with life partner', user: 'Rachel James', location: 'India', views: '23K', image: 'https://images.unsplash.com/photo-1494790108755-2616c9c0e0e0?w=300' },
-    { id: 2, title: '#Alone Life', user: 'Micale Johans', location: 'India', views: '26B', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300' },
-    { id: 3, title: '#Smile can win', user: 'Dwayen jack', location: 'U.S.A', views: '23K', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300' },
-    { id: 4, title: '#Fashion adda', user: 'Jenny styler', location: 'Spain', views: '26B', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300' },
+    { id: 1, title: '#joy with life partner', user: 'Rachel James', location: 'India', views: '23K', image: require('@/assets/images/h1.png.png') },
+    { id: 2, title: '#Alone Life', user: 'Micale Johans', location: 'India', views: '26B', image: require('@/assets/images/h2.png.png') },
+    { id: 3, title: '#Smile can win', user: 'Dwayen jack', location: 'U.S.A', views: '23K', image: require('@/assets/images/h3.png.png') },
+    { id: 4, title: '#Fashion adda', user: 'Jenny styler', location: 'Spain', views: '26B', image: require('@/assets/images/h4.png.png') },
   ];
 
   return (
@@ -17,13 +26,13 @@ export default function HomeScreen() {
         <ThemedText style={styles.title}>Ananta</ThemedText>
         <View style={styles.headerIcons}>
           <TouchableOpacity style={styles.iconButton}>
-            <ThemedText style={styles.icon}>🔍</ThemedText>
+            <ThemedText style={[styles.icon, {color: '#127D96'}]}>🔍</ThemedText>
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton}>
-            <ThemedText style={styles.icon}>⚙️</ThemedText>
+            <ThemedText style={[styles.icon, {color: '#127D96'}]}>⚙️</ThemedText>
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton}>
-            <ThemedText style={styles.icon}>🔔</ThemedText>
+            <ThemedText style={[styles.icon, {color: '#127D96'}]}>🔔</ThemedText>
           </TouchableOpacity>
         </View>
       </View>
@@ -38,17 +47,21 @@ export default function HomeScreen() {
       </View>
       
       <ScrollView style={styles.content}>
-        <View style={styles.featuredVideo}>
-          <Image source={{ uri: 'https://images.unsplash.com/photo-1494790108755-2616c9c0e0e0?w=400' }} style={styles.featuredImage} />
-          <TouchableOpacity style={styles.playButton}>
-            <ThemedText style={styles.playIcon}>▶️</ThemedText>
-          </TouchableOpacity>
-        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} pagingEnabled style={styles.bannerContainer}>
+          {bannerImages.map((image, index) => (
+            <View key={index} style={styles.featuredVideo}>
+              <Image source={image} style={styles.featuredImage} />
+              <TouchableOpacity style={styles.playButton}>
+                <Image source={require('@/assets/images/Group.png')} style={styles.playButtonImage} />
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
         
         <View style={styles.videoGrid}>
           {videos.map((video, index) => (
             <View key={video.id} style={styles.videoCard}>
-              <Image source={{ uri: video.image }} style={styles.videoImage} />
+              <Image source={video.image} style={styles.videoImage} />
               <View style={styles.videoOverlay}>
                 <View style={styles.viewCount}>
                   <ThemedText style={styles.viewText}>👁 {video.views}</ThemedText>
@@ -56,7 +69,7 @@ export default function HomeScreen() {
                 <View style={styles.videoInfo}>
                   <ThemedText style={styles.videoTitle}>{video.title}</ThemedText>
                   <View style={styles.userInfo}>
-                    <Image source={{ uri: video.image }} style={styles.userAvatar} />
+                    <Image source={video.image} style={styles.userAvatar} />
                     <View>
                       <ThemedText style={styles.userName}>{video.user}</ThemedText>
                       <ThemedText style={styles.userLocation}>{video.location}</ThemedText>
@@ -78,7 +91,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#E7E2E2',
   },
   header: {
     flexDirection: 'row',
@@ -102,6 +115,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 20,
+    color: '#127D96',
   },
   tabContainer: {
     flexDirection: 'row',
@@ -128,31 +142,40 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
   },
+  bannerContainer: {
+    marginBottom: 20,
+  },
   featuredVideo: {
+    width: width - 40,
     height: 200,
     borderRadius: 15,
     overflow: 'hidden',
-    marginBottom: 20,
+    marginRight: 15,
     position: 'relative',
   },
   featuredImage: {
     width: '100%',
     height: '100%',
+    resizeMode: 'cover',
   },
   playButton: {
     position: 'absolute',
     top: '50%',
     left: '50%',
-    transform: [{ translateX: -25 }, { translateY: -25 }],
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    transform: [{ translateX: -20 }, { translateY: -20 }],
+    width: 40,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
   },
   playIcon: {
-    fontSize: 20,
+    fontSize: 24,
+    marginLeft: 3,
+  },
+  playButtonImage: {
+    width: 40,
+    height: 40,
+    resizeMode: 'contain',
   },
   videoGrid: {
     flexDirection: 'row',
@@ -169,6 +192,7 @@ const styles = StyleSheet.create({
   videoImage: {
     width: '100%',
     height: '100%',
+    resizeMode: 'cover',
   },
   videoOverlay: {
     position: 'absolute',
