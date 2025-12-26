@@ -1,8 +1,8 @@
-import { StyleSheet, TouchableOpacity, View, Image, TextInput, ScrollView } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, Image, StyleSheet, TextInput, TouchableOpacity, View, Text, ScrollView } from 'react-native';
 
 export default function VideoLiveScreen() {
   const params = useLocalSearchParams();
@@ -11,14 +11,44 @@ export default function VideoLiveScreen() {
   const location = params.location as string || 'Location';
   const views = params.views as string || '20';
   
+  const [liveComments, setLiveComments] = useState<any[]>([
+    { id: 1, user: 'Johnson joy', message: 'Great stream!', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50' },
+    { id: 2, user: 'Henny', message: 'Love this song', avatar: 'https://images.unsplash.com/photo-1494790108755-2616c9c0e0e0?w=50' },
+    { id: 3, user: 'Mike', message: 'Amazing performance!', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50' }
+  ]);
+  const [messageText, setMessageText] = useState('');
+  const animatedValues = useRef<{[key: number]: Animated.Value}>({});
+  
   const comments = [
     { id: 1, user: 'Johnson joy', message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50' },
     { id: 2, user: 'Johnson joy', message: 'Hi micale john', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50' },
-    { id: 3, user: 'Johnson joy', message: 'Hi micale john', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50' },
-    { id: 4, user: 'Henny', message: 'Hi', avatar: 'https://images.unsplash.com/photo-1494790108755-2616c9c0e0e0?w=50' },
-    { id: 5, user: 'Johnson joy', message: 'How are you?', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50' },
-    { id: 6, user: 'Henny', message: 'Im good, How are you?', avatar: 'https://images.unsplash.com/photo-1494790108755-2616c9c0e0e0?w=50' },
+    { id: 3, user: 'Henny', message: 'Hi', avatar: 'https://images.unsplash.com/photo-1494790108755-2616c9c0e0e0?w=50' },
+    { id: 4, user: 'Johnson joy', message: 'How are you?', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50' },
+    { id: 5, user: 'Henny', message: 'Im good, How are you?', avatar: 'https://images.unsplash.com/photo-1494790108755-2616c9c0e0e0?w=50' },
   ];
+
+  const sendMessage = () => {
+    if (messageText.trim()) {
+      const newComment = {
+        id: Date.now(),
+        user: 'You',
+        message: messageText.trim(),
+        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=50'
+      };
+      setLiveComments(prev => [...prev, newComment].slice(-5));
+      setMessageText('');
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const randomComment = comments[Math.floor(Math.random() * comments.length)];
+      const newComment = { ...randomComment, id: Date.now() };
+      setLiveComments(prev => [...prev, newComment].slice(-5));
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -67,17 +97,13 @@ export default function VideoLiveScreen() {
         </View>
 
         <View style={styles.commentsSection}>
-          <ScrollView style={styles.commentsList}>
-            {comments.map((comment) => (
-              <View key={comment.id} style={styles.commentItem}>
-                <Image source={{ uri: comment.avatar }} style={styles.commentAvatar} />
-                <View style={styles.commentContent}>
-                  <ThemedText style={styles.commentUser}>@{comment.user}</ThemedText>
-                  <ThemedText style={styles.commentText}>{comment.message}</ThemedText>
-                </View>
-              </View>
-            ))}
-          </ScrollView>
+          {liveComments.map((comment) => (
+            <View key={comment.id} style={styles.liveCommentItem}>
+              <Image source={{ uri: comment.avatar }} style={styles.liveCommentAvatar} />
+              <Text style={styles.liveCommentUser}>@{comment.user}: </Text>
+              <Text style={styles.liveCommentText}>{comment.message}</Text>
+            </View>
+          ))}
         </View>
 
         <View style={styles.bottomSection}>
@@ -86,8 +112,11 @@ export default function VideoLiveScreen() {
               style={styles.messageInput}
               placeholder="Say Something..."
               placeholderTextColor="rgba(255,255,255,0.7)"
+              value={messageText}
+              onChangeText={setMessageText}
+              onSubmitEditing={sendMessage}
             />
-            <TouchableOpacity style={styles.sendButton}>
+            <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
               <ThemedText style={styles.sendIcon}>▶</ThemedText>
             </TouchableOpacity>
           </View>
@@ -121,7 +150,6 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.3)',
-    padding: 20,
   },
   header: {
     flexDirection: 'row',
@@ -129,6 +157,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 40,
     marginBottom: 20,
+    paddingHorizontal: 20,
   },
   userInfo: {
     flexDirection: 'row',
@@ -180,6 +209,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
     marginBottom: 20,
+    paddingHorizontal: 20,
   },
   statItem: {
     flexDirection: 'row',
@@ -199,41 +229,59 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   commentsSection: {
-    flex: 1,
-    marginBottom: 20,
+    position: 'absolute',
+    bottom: 100,
+    left: 5,
+    right: 5,
+    height: 300,
+    justifyContent: 'flex-end',
   },
-  commentsList: {
-    flex: 1,
+  liveCommentItem: {
+    flexDirection: 'row',
+    marginBottom: 4,
+    alignItems: 'center',
   },
-  commentItem: {
+  liveCommentAvatar: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    marginRight: 6,
+  },
+  commentBubble: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 10,
   },
-  commentAvatar: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    marginRight: 10,
-  },
-  commentContent: {
+  liveCommentContent: {
     flex: 1,
   },
-  commentUser: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginBottom: 2,
+  liveCommentAvatar: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    marginRight: 8,
   },
-  commentText: {
-    color: 'white',
-    fontSize: 12,
-    opacity: 0.9,
+  liveCommentUser: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  liveCommentText: {
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 14,
+    flex: 1,
   },
   bottomSection: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    paddingBottom: 30,
+    backgroundColor: 'rgba(0,0,0,0.3)',
   },
   inputContainer: {
     flex: 1,
@@ -271,4 +319,4 @@ const styles = StyleSheet.create({
   actionIcon: {
     fontSize: 18,
   },
-});
+})
