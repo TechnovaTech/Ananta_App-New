@@ -1,8 +1,8 @@
-import { StyleSheet, TouchableOpacity, View, Image, TextInput, ScrollView } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { Image, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function AudioLiveScreen() {
   const params = useLocalSearchParams();
@@ -11,18 +11,74 @@ export default function AudioLiveScreen() {
   const location = params.location as string || 'Location';
   const listeners = params.listeners as string || '1.2K';
   
+  const [liveComments, setLiveComments] = useState<any[]>([
+    { id: 1, user: 'Johnson joy', message: 'Great stream!', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50' },
+    { id: 2, user: 'Henny', message: 'Love this song', avatar: 'https://images.unsplash.com/photo-1494790108755-2616c9c0e0e0?w=50' },
+    { id: 3, user: 'Mike', message: 'Amazing performance!', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50' }
+  ]);
+  const [messageText, setMessageText] = useState('');
+  const [floatingHearts, setFloatingHearts] = useState<any[]>([]);
+  
   const comments = [
     { id: 1, user: 'Johnson joy', message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50' },
     { id: 2, user: 'Johnson joy', message: 'Hi micale john', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50' },
     { id: 3, user: 'Henny', message: 'Hi', avatar: 'https://images.unsplash.com/photo-1494790108755-2616c9c0e0e0?w=50' },
+    { id: 4, user: 'Johnson joy', message: 'How are you?', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50' },
+    { id: 5, user: 'Henny', message: 'Im good, How are you?', avatar: 'https://images.unsplash.com/photo-1494790108755-2616c9c0e0e0?w=50' },
   ];
 
+  const addFloatingHeart = () => {
+    const newHeart = {
+      id: Date.now(),
+      bottom: Math.random() * 200 + 100,
+      right: Math.random() * 50 + 20,
+    };
+    setFloatingHearts(prev => [...prev, newHeart]);
+    
+    setTimeout(() => {
+      setFloatingHearts(prev => prev.filter(heart => heart.id !== newHeart.id));
+    }, 3000);
+  };
+
+  const sendMessage = () => {
+    if (messageText.trim()) {
+      const newComment = {
+        id: Date.now(),
+        user: 'You',
+        message: messageText.trim(),
+        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=50'
+      };
+      setLiveComments(prev => [...prev, newComment].slice(-5));
+      setMessageText('');
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const randomComment = comments[Math.floor(Math.random() * comments.length)];
+      const newComment = { ...randomComment, id: Date.now() };
+      setLiveComments(prev => [...prev, newComment].slice(-5));
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <ThemedView style={styles.container}>
+    <KeyboardAvoidingView 
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <Image 
+        source={{ uri: 'https://images.unsplash.com/photo-1494790108755-2616c9c0e0e0?w=400' }}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      />
+      
+      <View style={styles.overlay}>
       <View style={styles.header}>
         <View style={styles.userInfo}>
           <Image 
-            source={{ uri: 'https://images.unsplash.com/photo-1494790108755-2616c9c0e0e0?w=50' }}
+            source={{ uri: 'https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500' }}
             style={styles.userAvatar}
           />
           <View>
@@ -54,29 +110,38 @@ export default function AudioLiveScreen() {
       </View>
 
       <View style={styles.audioVisualization}>
-        <Image 
-          source={{ uri: 'https://images.unsplash.com/photo-1494790108755-2616c9c0e0e0?w=200' }}
-          style={styles.hostImage}
-        />
+        <View style={styles.profileContainer}>
+          <Image 
+            source={{ uri: 'https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500' }}
+            style={styles.hostImage}
+          />
+          <View style={styles.profileBorder}></View>
+          <View style={styles.audioRing}></View>
+        </View>
       </View>
 
       <View style={styles.commentsSection}>
-        <ScrollView style={styles.commentsList}>
-          {comments.map((comment) => (
-            <View key={comment.id} style={styles.commentItem}>
-              <Image source={{ uri: comment.avatar }} style={styles.commentAvatar} />
-              <View style={styles.commentContent}>
-                <ThemedText style={styles.commentUser}>@{comment.user}</ThemedText>
-                <ThemedText style={styles.commentText}>{comment.message}</ThemedText>
-                <View style={styles.heartContainer}>
-                  <ThemedText style={styles.heart}>❤️</ThemedText>
-                  <ThemedText style={styles.heart}>❤️</ThemedText>
-                  <ThemedText style={styles.heart}>❤️</ThemedText>
-                </View>
-              </View>
-            </View>
-          ))}
-        </ScrollView>
+        {liveComments.map((comment) => (
+          <View key={comment.id} style={styles.liveCommentItem}>
+            <Image source={{ uri: comment.avatar }} style={styles.liveCommentAvatar} />
+            <Text style={styles.liveCommentUser}>@{comment.user}: </Text>
+            <Text style={styles.liveCommentText}>{comment.message}</Text>
+          </View>
+        ))}
+      </View>
+
+      <View style={styles.floatingHeartsContainer}>
+        {floatingHearts.map((heart) => (
+          <View 
+            key={heart.id} 
+            style={[
+              styles.floatingHeart,
+              { bottom: heart.bottom, right: heart.right }
+            ]}
+          >
+            <Text style={styles.heartEmoji}>❤️</Text>
+          </View>
+        ))}
       </View>
 
       <View style={styles.bottomSection}>
@@ -84,9 +149,12 @@ export default function AudioLiveScreen() {
           <TextInput
             style={styles.messageInput}
             placeholder="Say Something..."
-            placeholderTextColor="#999"
+            placeholderTextColor="rgba(0,0,0,0.5)"
+            value={messageText}
+            onChangeText={setMessageText}
+            onSubmitEditing={sendMessage}
           />
-          <TouchableOpacity style={styles.sendButton}>
+          <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
             <ThemedText style={styles.sendIcon}>▶</ThemedText>
           </TouchableOpacity>
         </View>
@@ -98,19 +166,28 @@ export default function AudioLiveScreen() {
           <TouchableOpacity style={styles.actionButton}>
             <ThemedText style={styles.actionIcon}>🎁</ThemedText>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton}>
+          <TouchableOpacity style={styles.actionButton} onPress={addFloatingHeart}>
             <ThemedText style={styles.actionIcon}>❤️</ThemedText>
           </TouchableOpacity>
         </View>
       </View>
-    </ThemedView>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(255,255,255,0.9)',
     padding: 20,
   },
   header: {
@@ -139,7 +216,7 @@ const styles = StyleSheet.create({
   liveText: {
     color: 'black',
     fontSize: 12,
-    opacity: 0.7,
+    opacity: 0.8,
   },
   followButton: {
     backgroundColor: Colors.light.primary,
@@ -157,7 +234,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: 'rgba(0,0,0,0.1)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -174,7 +251,7 @@ const styles = StyleSheet.create({
   statItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.light.primary,
+    backgroundColor: 'rgba(0,0,0,0.1)',
     paddingHorizontal: 15,
     paddingVertical: 8,
     borderRadius: 20,
@@ -184,74 +261,120 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   statText: {
-    color: 'white',
+    color: 'black',
     fontSize: 14,
     fontWeight: '600',
   },
   audioVisualization: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -100 }, { translateY: -100 }],
     alignItems: 'center',
-    marginBottom: 30,
+    justifyContent: 'center',
+  },
+  profileContainer: {
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   hostImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    borderWidth: 6,
+    borderColor: 'white',
+  },
+  profileBorder: {
+    position: 'absolute',
+    width: 240,
+    height: 240,
+    borderRadius: 120,
+    borderWidth: 4,
+    borderColor: '#00FF00',
+    opacity: 0.8,
+  },
+  audioRing: {
+    position: 'absolute',
+    width: 260,
+    height: 260,
+    borderRadius: 130,
+    borderWidth: 2,
+    borderColor: '#00FF00',
+    opacity: 0.5,
   },
   commentsSection: {
-    flex: 1,
-    marginBottom: 20,
+    position: 'absolute',
+    bottom: 100,
+    left: 5,
+    right: 5,
+    height: 200,
+    justifyContent: 'flex-end',
   },
-  commentsList: {
-    flex: 1,
-  },
-  commentItem: {
+  liveCommentItem: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 15,
+    marginBottom: 4,
+    alignItems: 'center',
   },
-  commentAvatar: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    marginRight: 10,
+  liveCommentAvatar: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    marginRight: 6,
   },
-  commentContent: {
+  liveCommentContent: {
     flex: 1,
   },
-  commentUser: {
-    color: 'black',
-    fontSize: 12,
+  liveCommentUser: {
+    color: '#000000',
+    fontSize: 14,
     fontWeight: 'bold',
-    marginBottom: 2,
   },
-  commentText: {
-    color: 'black',
-    fontSize: 12,
-    marginBottom: 5,
+  liveCommentText: {
+    color: 'rgba(0,0,0,0.7)',
+    fontSize: 14,
+    flex: 1,
   },
-  heartContainer: {
-    flexDirection: 'row',
-    gap: 2,
+  floatingHeartsContainer: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    bottom: 0,
+    width: 100,
+    pointerEvents: 'none',
   },
-  heart: {
-    fontSize: 12,
+  floatingHeart: {
+    position: 'absolute',
+    opacity: 0.8,
+  },
+  heartEmoji: {
+    fontSize: 24,
+    color: '#FF6B6B',
   },
   bottomSection: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    paddingBottom: 30,
+    backgroundColor: 'rgba(243, 222, 222, 0.9)',
   },
   inputContainer: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.light.primary,
+    backgroundColor: 'rgba(0,0,0,0.1)',
     borderRadius: 25,
     paddingHorizontal: 15,
   },
   messageInput: {
     flex: 1,
-    color: 'white',
+    color: 'black',
     fontSize: 14,
     paddingVertical: 10,
   },
@@ -259,7 +382,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   sendIcon: {
-    color: 'white',
+    color: 'black',
     fontSize: 16,
   },
   actionButtons: {
@@ -270,7 +393,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: 'rgba(0,0,0,0.1)',
     justifyContent: 'center',
     alignItems: 'center',
   },
