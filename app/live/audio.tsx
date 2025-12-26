@@ -2,9 +2,15 @@ import { StyleSheet, TouchableOpacity, View, Image, TextInput, ScrollView } from
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 
 export default function AudioLiveScreen() {
+  const params = useLocalSearchParams();
+  const title = params.title as string || '#Love me like you do';
+  const user = params.user as string || 'Micale clarke';
+  const location = params.location as string || 'Location';
+  const listeners = params.listeners as string || '1.2K';
+  
   const comments = [
     { id: 1, user: 'Johnson joy', message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50' },
     { id: 2, user: 'Johnson joy', message: 'Hi micale john', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50' },
@@ -20,8 +26,8 @@ export default function AudioLiveScreen() {
             style={styles.userAvatar}
           />
           <View>
-            <ThemedText style={styles.username}>@Micale clarke</ThemedText>
-            <ThemedText style={styles.liveText}>#Love me like you do</ThemedText>
+            <ThemedText style={styles.username}>@{user}</ThemedText>
+            <ThemedText style={styles.liveText}>{title}</ThemedText>
           </View>
           <TouchableOpacity style={styles.followButton}>
             <ThemedText style={styles.followText}>Follow</ThemedText>

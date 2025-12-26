@@ -30,6 +30,7 @@ const BellIcon = ({ color }: { color: string }) => (
 
 export default function HomeScreen() {
   const [followedUsers, setFollowedUsers] = useState<number[]>([]);
+  const [activeTab, setActiveTab] = useState<'video' | 'audio'>('video');
 
   const handleFollow = (userId: number) => {
     setFollowedUsers(prev => 
@@ -52,6 +53,13 @@ export default function HomeScreen() {
     { id: 4, title: '#Fashion adda', user: 'Jenny styler', location: 'Spain', views: '26B', image: require('@/assets/images/h4.png.png') },
   ];
 
+  const audioStreams = [
+    { id: 1, title: 'Morning Meditation', user: 'Sarah Wilson', location: 'India', listeners: '1.2K', image: require('@/assets/images/h1.png.png') },
+    { id: 2, title: 'Jazz Evening', user: 'Mike Johnson', location: 'USA', listeners: '850', image: require('@/assets/images/h2.png.png') },
+    { id: 3, title: 'Podcast Talk', user: 'Emma Davis', location: 'UK', listeners: '2.1K', image: require('@/assets/images/h3.png.png') },
+    { id: 4, title: 'Music Lounge', user: 'Alex Chen', location: 'Canada', listeners: '950', image: require('@/assets/images/h4.png.png') },
+  ];
+
   return (
     <ThemedView style={styles.container}>
       <View style={styles.header}>
@@ -60,7 +68,10 @@ export default function HomeScreen() {
           <View style={styles.titleUnderline} />
         </View>
         <View style={styles.headerIcons}>
-          <TouchableOpacity style={styles.iconButton}>
+          <TouchableOpacity 
+            style={styles.iconButton}
+            onPress={() => router.push('/search')}
+          >
             <SearchIcon color="#127D96" />
           </TouchableOpacity>
           <TouchableOpacity 
@@ -76,11 +87,17 @@ export default function HomeScreen() {
       </View>
       
       <View style={styles.tabContainer}>
-        <TouchableOpacity style={[styles.tab, styles.activeTab]}>
-          <ThemedText style={styles.activeTabText}>Video Live</ThemedText>
+        <TouchableOpacity 
+          style={[styles.tab, activeTab === 'video' && styles.activeTab]}
+          onPress={() => setActiveTab('video')}
+        >
+          <ThemedText style={[styles.tabText, activeTab === 'video' && styles.activeTabText]}>Video Live</ThemedText>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.tab}>
-          <ThemedText style={styles.tabText}>Audio Live</ThemedText>
+        <TouchableOpacity 
+          style={[styles.tab, activeTab === 'audio' && styles.activeTab]}
+          onPress={() => setActiveTab('audio')}
+        >
+          <ThemedText style={[styles.tabText, activeTab === 'audio' && styles.activeTabText]}>Audio Live</ThemedText>
         </TouchableOpacity>
       </View>
       
@@ -97,34 +114,70 @@ export default function HomeScreen() {
         </ScrollView>
         
         <View style={styles.videoGrid}>
-          {videos.map((video, index) => (
+          {(activeTab === 'video' ? videos : audioStreams).map((item, index) => (
             <TouchableOpacity 
-              key={video.id} 
+              key={item.id} 
               style={styles.videoCard}
-              onPress={() => router.push('/live')}
+              onPress={() => {
+                if (activeTab === 'video') {
+                  router.push({
+                    pathname: '/live/video',
+                    params: {
+                      title: item.title,
+                      user: item.user,
+                      location: item.location,
+                      views: (item as any).views,
+                      image: JSON.stringify(item.image)
+                    }
+                  });
+                } else {
+                  router.push({
+                    pathname: '/live/audio',
+                    params: {
+                      title: item.title,
+                      user: item.user,
+                      location: item.location,
+                      listeners: (item as any).listeners,
+                      image: JSON.stringify(item.image)
+                    }
+                  });
+                }
+              }}
             >
-              <Image source={video.image} style={styles.videoImage} />
+              <Image source={item.image} style={styles.videoImage} />
+              {activeTab === 'audio' && (
+                <View style={styles.audioOverlay}>
+                  <View style={styles.audioProfileContainer}>
+                    <Image source={item.image} style={styles.audioProfileImage} />
+                    <View style={styles.liveIndicator}>
+                      <ThemedText style={styles.liveText}>LIVE</ThemedText>
+                    </View>
+                  </View>
+                </View>
+              )}
               <View style={styles.videoOverlay}>
                 <View style={styles.viewCount}>
-                  <ThemedText style={styles.viewText}>👁 {video.views}</ThemedText>
+                  <ThemedText style={styles.viewText}>
+                    {activeTab === 'video' ? `👁 ${(item as any).views}` : `🎧 ${(item as any).listeners}`}
+                  </ThemedText>
                 </View>
                 <View style={styles.videoInfo}>
-                  <ThemedText style={styles.videoTitle}>{video.title}</ThemedText>
+                  <ThemedText style={styles.videoTitle}>{item.title}</ThemedText>
                   <View style={styles.userInfo}>
-                    <Image source={video.image} style={styles.userAvatar} />
-                    <View>
-                      <ThemedText style={styles.userName}>{video.user}</ThemedText>
-                      <ThemedText style={styles.userLocation}>{video.location}</ThemedText>
+                    <Image source={item.image} style={styles.userAvatar} />
+                    <View style={styles.userDetails}>
+                      <ThemedText style={styles.userName}>{item.user}</ThemedText>
+                      <ThemedText style={styles.userLocation}>{item.location}</ThemedText>
                     </View>
                     <TouchableOpacity 
                       style={[
                         styles.followButton,
-                        followedUsers.includes(video.id) && styles.followingButton
+                        followedUsers.includes(item.id) && styles.followingButton
                       ]}
-                      onPress={() => handleFollow(video.id)}
+                      onPress={() => handleFollow(item.id)}
                     >
                       <ThemedText style={styles.followText}>
-                        {followedUsers.includes(video.id) ? 'Following' : 'Follow'}
+                        {followedUsers.includes(item.id) ? 'Following' : 'Follow'}
                       </ThemedText>
                     </TouchableOpacity>
                   </View>
@@ -284,31 +337,39 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
     gap: 8,
+  },
+  userDetails: {
+    flex: 1,
+    gap: 2,
   },
   userAvatar: {
     width: 20,
     height: 20,
     borderRadius: 10,
+    marginTop: 2,
   },
   userName: {
     color: 'white',
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '600',
+    lineHeight: 14,
   },
   userLocation: {
-    color: 'white',
-    fontSize: 8,
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: 9,
+    lineHeight: 12,
   },
   followButton: {
     backgroundColor: Colors.light.primary,
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 10,
-    marginLeft: 'auto',
-    minWidth: 60,
+    borderRadius: 8,
+    minWidth: 55,
     alignItems: 'center',
+    alignSelf: 'flex-start',
   },
   followText: {
     color: 'white',
@@ -318,5 +379,39 @@ const styles = StyleSheet.create({
   },
   followingButton: {
     backgroundColor: Colors.light.primary,
+  },
+  audioOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  audioProfileContainer: {
+    alignItems: 'center',
+    position: 'relative',
+  },
+  audioProfileImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 3,
+    borderColor: Colors.light.primary,
+  },
+  liveIndicator: {
+    position: 'absolute',
+    bottom: -5,
+    backgroundColor: '#FF4444',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  liveText: {
+    color: 'white',
+    fontSize: 8,
+    fontWeight: 'bold',
   },
 });

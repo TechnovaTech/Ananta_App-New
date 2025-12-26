@@ -2,9 +2,15 @@ import { StyleSheet, TouchableOpacity, View, Image, TextInput, ScrollView } from
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 
 export default function VideoLiveScreen() {
+  const params = useLocalSearchParams();
+  const title = params.title as string || '#Love me like you do';
+  const user = params.user as string || 'Micale clarke';
+  const location = params.location as string || 'Location';
+  const views = params.views as string || '20';
+  
   const comments = [
     { id: 1, user: 'Johnson joy', message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50' },
     { id: 2, user: 'Johnson joy', message: 'Hi micale john', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50' },
@@ -29,8 +35,8 @@ export default function VideoLiveScreen() {
               style={styles.userAvatar}
             />
             <View>
-              <ThemedText style={styles.username}>@Micale clarke</ThemedText>
-              <ThemedText style={styles.liveText}>#Love me like you do</ThemedText>
+              <ThemedText style={styles.username}>@{user}</ThemedText>
+              <ThemedText style={styles.liveText}>{title}</ThemedText>
             </View>
             <TouchableOpacity style={styles.followButton}>
               <ThemedText style={styles.followText}>Follow</ThemedText>
@@ -48,7 +54,7 @@ export default function VideoLiveScreen() {
         <View style={styles.stats}>
           <View style={styles.statItem}>
             <ThemedText style={styles.statIcon}>👁</ThemedText>
-            <ThemedText style={styles.statText}>20 Viewers</ThemedText>
+            <ThemedText style={styles.statText}>{views} Viewers</ThemedText>
           </View>
           <View style={styles.statItem}>
             <ThemedText style={styles.statIcon}>💛</ThemedText>
