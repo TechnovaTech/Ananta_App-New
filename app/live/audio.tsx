@@ -2,7 +2,7 @@ import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Image, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function AudioLiveScreen() {
   const params = useLocalSearchParams();
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 15,
     paddingBottom: 30,
-    backgroundColor: 'rgba(243, 222, 222, 0.9)',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
   inputContainer: {
     flex: 1,

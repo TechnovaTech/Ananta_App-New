@@ -144,7 +144,7 @@ export default function HomeScreen() {
                 }
               }}
             >
-              <Image source={item.image} style={styles.videoImage} />
+              {activeTab === 'video' && <Image source={item.image} style={styles.videoImage} />}
               {activeTab === 'audio' && (
                 <View style={styles.audioOverlay}>
                   <View style={styles.audioProfileContainer}>
@@ -300,6 +300,8 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     overflow: 'hidden',
     position: 'relative',
+    borderWidth: 2,
+    borderColor: Colors.light.primary,
   },
   videoImage: {
     width: '100%',
@@ -386,7 +388,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: 'rgba(0,0,0,0.1)',
     justifyContent: 'center',
     alignItems: 'center',
   },

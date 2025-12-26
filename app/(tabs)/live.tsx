@@ -20,14 +20,9 @@ export default function LiveScreen() {
   return (
     <ThemedView style={styles.container}>
       <View style={styles.header}>
-        <ThemedText style={styles.title}>Ananta</ThemedText>
-        <View style={styles.headerIcons}>
-          <TouchableOpacity style={styles.iconButton}>
-            <ThemedText style={styles.icon}>🔍</ThemedText>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <ThemedText style={styles.icon}>⚙️</ThemedText>
-          </TouchableOpacity>
+        <View style={styles.titleContainer}>
+          <ThemedText style={styles.title}>Ananta</ThemedText>
+          <View style={styles.titleUnderline} />
         </View>
       </View>
 
@@ -78,26 +73,25 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 50,
     paddingBottom: 20,
   },
+  titleContainer: {
+    alignItems: 'center',
+  },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
     color: 'black',
   },
-  headerIcons: {
-    flexDirection: 'row',
-    gap: 15,
-  },
-  iconButton: {
-    padding: 5,
-  },
-  icon: {
-    fontSize: 20,
+  titleUnderline: {
+    width: 120,
+    height: 4,
+    backgroundColor: Colors.light.primary,
+    marginTop: 4,
   },
   content: {
     flex: 1,
