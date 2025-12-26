@@ -14,6 +14,7 @@ export default function VideoLiveScreen() {
   const [likes, setLikes] = useState(15000);
   const [isLiked, setIsLiked] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [floatingHearts, setFloatingHearts] = useState<any[]>([]);
   
   const [liveComments, setLiveComments] = useState<any[]>([
     { id: 1, user: 'Johnson joy', message: 'Great stream!', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50' },
@@ -31,18 +32,27 @@ export default function VideoLiveScreen() {
     { id: 5, user: 'Henny', message: 'Im good, How are you?', avatar: 'https://images.unsplash.com/photo-1494790108755-2616c9c0e0e0?w=50' },
   ];
 
+  const addFloatingHeart = () => {
+    const newHeart = {
+      id: Date.now(),
+      bottom: Math.random() * 200 + 100,
+      right: Math.random() * 50 + 20,
+    };
+    setFloatingHearts(prev => [...prev, newHeart]);
+    
+    setTimeout(() => {
+      setFloatingHearts(prev => prev.filter(heart => heart.id !== newHeart.id));
+    }, 3000);
+  };
+
   const handleFollow = () => {
     setIsFollowing(!isFollowing);
   };
 
   const handleLike = () => {
-    if (isLiked) {
-      setLikes(prev => prev - 1);
-      setIsLiked(false);
-    } else {
-      setLikes(prev => prev + 1);
-      setIsLiked(true);
-    }
+    setLikes(prev => prev + 1);
+    setIsLiked(true);
+    addFloatingHeart();
   };
 
   const sendMessage = () => {
@@ -131,6 +141,20 @@ export default function VideoLiveScreen() {
           ))}
         </View>
 
+        <View style={styles.floatingHeartsContainer}>
+          {floatingHearts.map((heart) => (
+            <View 
+              key={heart.id} 
+              style={[
+                styles.floatingHeart,
+                { bottom: heart.bottom, right: heart.right }
+              ]}
+            >
+              <Text style={styles.heartEmoji}>❤️</Text>
+            </View>
+          ))}
+        </View>
+
         <View style={styles.bottomSection}>
           <View style={styles.inputContainer}>
             <TextInput
@@ -153,7 +177,7 @@ export default function VideoLiveScreen() {
             <TouchableOpacity style={styles.actionButton}>
               <ThemedText style={styles.actionIcon}>🎁</ThemedText>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionButton, isLiked && styles.likedButton]} onPress={handleLike}>
+            <TouchableOpacity style={styles.actionButton} onPress={handleLike}>
               <ThemedText style={[styles.actionIcon, { color: isLiked ? '#ff4444' : 'white' }]}>❤️</ThemedText>
             </TouchableOpacity>
           </View>
@@ -347,13 +371,24 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.2)',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  likedButton: {
-    borderColor: '#ff4444',
   },
   actionIcon: {
     fontSize: 18,
+  },
+  floatingHeartsContainer: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    bottom: 0,
+    width: 100,
+    pointerEvents: 'none',
+  },
+  floatingHeart: {
+    position: 'absolute',
+    opacity: 0.8,
+  },
+  heartEmoji: {
+    fontSize: 24,
+    color: '#FF6B6B',
   },
 })
