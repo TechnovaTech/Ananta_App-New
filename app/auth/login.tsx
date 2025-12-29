@@ -60,6 +60,7 @@ export default function LoginScreen() {
             style={styles.input}
             placeholder="+91 | Enter Contact Number"
             placeholderTextColor="#666"
+            keyboardType="phone-pad"
           />
           
           <TouchableOpacity 
@@ -145,6 +146,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 16,
     fontFamily: 'Inter_400Regular',
+    color: '#333',
   },
   otpButtonContainer: {
     width: '100%',

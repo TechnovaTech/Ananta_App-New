@@ -2,7 +2,7 @@ import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Image, StyleSheet, TextInput, TouchableOpacity, View, Text, ScrollView } from 'react-native';
+import { Animated, Image, StyleSheet, TextInput, TouchableOpacity, View, Text, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 
 export default function VideoLiveScreen() {
   const params = useLocalSearchParams();
@@ -79,7 +79,11 @@ export default function VideoLiveScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView 
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={0}
+    >
       <Image 
         source={require('../../assets/images/video image.png')}
         style={styles.backgroundImage}
@@ -183,7 +187,7 @@ export default function VideoLiveScreen() {
           </View>
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -295,10 +299,10 @@ const styles = StyleSheet.create({
   },
   commentsSection: {
     position: 'absolute',
-    bottom: 100,
+    bottom: 120,
     left: 5,
     right: 5,
-    height: 300,
+    height: 250,
     justifyContent: 'flex-end',
   },
   liveCommentItem: {

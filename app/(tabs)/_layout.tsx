@@ -43,7 +43,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: '#127D96',
-        tabBarInactiveTintColor: '#999999',
+        tabBarInactiveTintColor: '#666666',
         tabBarStyle: {
           backgroundColor: 'white',
           borderTopWidth: 1,
@@ -53,10 +53,11 @@ export default function TabLayout() {
           height: 70 + Math.max(insets.bottom, 20),
         },
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: '600',
-          marginTop: 2,
-          marginBottom: 0,
+          marginTop: 4,
+          marginBottom: 2,
+          fontFamily: 'Inter_400Regular',
         },
         tabBarIconStyle: {
           marginBottom: 0,
