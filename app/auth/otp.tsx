@@ -62,6 +62,7 @@ export default function OTPScreen() {
                 keyboardType="numeric"
                 value={otp[index]}
                 onChangeText={(value) => handleOtpChange(value, index)}
+                selectionColor="#127D96"
               />
             ))}
           </View>

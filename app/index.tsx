@@ -61,6 +61,7 @@ export default function Index() {
             placeholder="+91 | Enter Contact Number"
             placeholderTextColor="#666"
             keyboardType="phone-pad"
+            selectionColor="#127D96"
           />
           
           <TouchableOpacity 

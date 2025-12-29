@@ -32,6 +32,7 @@ export default function HomeScreen() {
   const [followedUsers, setFollowedUsers] = useState<number[]>([]);
   const [activeTab, setActiveTab] = useState<'video' | 'audio'>('video');
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const [currentLeftCardIndex, setCurrentLeftCardIndex] = useState(0);
   const bannerScrollRef = useRef<ScrollView>(null);
 
   const handleFollow = (userId: number) => {
@@ -93,6 +94,17 @@ export default function HomeScreen() {
     { id: 1, name: 'Alex Chen', username: '@alex_c', image: require('@/assets/images/h4.png.png') },
     { id: 2, name: 'Rachel James', username: '@rachel_j', image: require('@/assets/images/h1.png.png') },
   ];
+
+  useEffect(() => {
+    const leftCardInterval = setInterval(() => {
+      setCurrentLeftCardIndex(prevIndex => {
+        const currentData = activeTab === 'video' ? videos : audioStreams;
+        return (prevIndex + 1) % currentData.length;
+      });
+    }, 3000);
+
+    return () => clearInterval(leftCardInterval);
+  }, [activeTab]);
 
   return (
     <ThemedView style={styles.container}>
@@ -170,79 +182,222 @@ export default function HomeScreen() {
           ))}
         </ScrollView>
         
-        <View style={styles.videoGrid}>
-          {(activeTab === 'video' || activeTab === 'audio') && (activeTab === 'video' ? videos : audioStreams).map((item, index) => (
-            <TouchableOpacity 
-              key={item.id} 
-              style={styles.videoCard}
-              onPress={() => {
-                if (activeTab === 'video') {
-                  router.push({
-                    pathname: '/live/video',
-                    params: {
-                      title: item.title,
-                      user: item.user,
-                      location: item.location,
-                      views: (item as any).views,
-                      image: JSON.stringify(item.image)
-                    }
-                  });
-                } else {
-                  router.push({
-                    pathname: '/live/audio',
-                    params: {
-                      title: item.title,
-                      user: item.user,
-                      location: item.location,
-                      listeners: (item as any).listeners,
-                      image: JSON.stringify(item.image)
-                    }
-                  });
-                }
-              }}
-            >
-              {activeTab === 'video' && <Image source={item.image} style={styles.videoImage} />}
-              {activeTab === 'audio' && (
-                <View style={styles.audioOverlay}>
-                  <View style={styles.audioProfileContainer}>
-                    <Image source={item.image} style={styles.audioProfileImage} />
-                    <View style={styles.liveIndicator}>
-                      <ThemedText style={styles.liveText}>LIVE</ThemedText>
-                    </View>
-                  </View>
-                </View>
-              )}
-              <View style={styles.videoOverlay}>
-                <View style={styles.viewCount}>
-                  <ThemedText style={styles.viewText}>
-                    {activeTab === 'video' ? `👁 ${(item as any).views}` : `🎧 ${(item as any).listeners}`}
-                  </ThemedText>
-                </View>
-                <View style={styles.videoInfo}>
-                  <ThemedText style={styles.videoTitle}>{item.title}</ThemedText>
-                  <View style={styles.userInfo}>
-                    <Image source={item.image} style={styles.userAvatar} />
-                    <View style={styles.userDetails}>
-                      <ThemedText style={styles.userName}>{item.user}</ThemedText>
-                      <ThemedText style={styles.userLocation}>{item.location}</ThemedText>
-                    </View>
+        {(activeTab === 'video' || activeTab === 'audio') && (
+          <View>
+            {/* First 3 cards special layout */}
+            <View style={styles.specialGrid}>
+              <View style={styles.leftColumn}>
+                {(() => {
+                  const currentData = activeTab === 'video' ? videos : audioStreams;
+                  const item = currentData[currentLeftCardIndex];
+                  return (
                     <TouchableOpacity 
-                      style={[
-                        styles.followButton,
-                        followedUsers.includes(item.id) && styles.followingButton
-                      ]}
-                      onPress={() => handleFollow(item.id)}
+                      key={item.id} 
+                      style={styles.largeCard}
+                      onPress={() => {
+                        if (activeTab === 'video') {
+                          router.push({
+                            pathname: '/live/video',
+                            params: {
+                              title: item.title,
+                              user: item.user,
+                              location: item.location,
+                              views: (item as any).views,
+                              image: JSON.stringify(item.image)
+                            }
+                          });
+                        } else {
+                          router.push({
+                            pathname: '/live/audio',
+                            params: {
+                              title: item.title,
+                              user: item.user,
+                              location: item.location,
+                              listeners: (item as any).listeners,
+                              image: JSON.stringify(item.image)
+                            }
+                          });
+                        }
+                      }}
                     >
-                      <ThemedText style={styles.followText}>
-                        {followedUsers.includes(item.id) ? 'Following' : 'Follow'}
-                      </ThemedText>
+                      {activeTab === 'video' && <Image source={item.image} style={styles.videoImage} />}
+                      {activeTab === 'audio' && (
+                        <View style={styles.audioOverlay}>
+                          <View style={styles.audioProfileContainer}>
+                            <Image source={item.image} style={styles.audioProfileImage} />
+                            <View style={styles.liveIndicator}>
+                              <ThemedText style={styles.liveText}>LIVE</ThemedText>
+                            </View>
+                          </View>
+                        </View>
+                      )}
+                      <View style={styles.videoOverlay}>
+                        <View style={styles.viewCount}>
+                          <ThemedText style={styles.viewText}>
+                            {activeTab === 'video' ? `👁 ${(item as any).views}` : `🎧 ${(item as any).listeners}`}
+                          </ThemedText>
+                        </View>
+                        <View style={styles.videoInfo}>
+                          <ThemedText style={styles.videoTitle}>{item.title}</ThemedText>
+                          <View style={styles.userInfo}>
+                            <Image source={item.image} style={styles.userAvatar} />
+                            <View style={styles.userDetails}>
+                              <ThemedText style={styles.userName}>{item.user}</ThemedText>
+                              <ThemedText style={styles.userLocation}>{item.location}</ThemedText>
+                            </View>
+                            <TouchableOpacity 
+                              style={[
+                                styles.followButton,
+                                followedUsers.includes(item.id) && styles.followingButton
+                              ]}
+                              onPress={() => handleFollow(item.id)}
+                            >
+                              <ThemedText style={styles.followText}>
+                                {followedUsers.includes(item.id) ? 'Following' : 'Follow'}
+                              </ThemedText>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      </View>
                     </TouchableOpacity>
-                  </View>
-                </View>
+                  );
+                })()}
               </View>
-            </TouchableOpacity>
-          ))}
-        </View>
+              
+              <View style={styles.rightColumn}>
+                {(activeTab === 'video' ? videos : audioStreams).slice(1, 3).map((item, index) => (
+                  <TouchableOpacity 
+                    key={item.id} 
+                    style={styles.smallCard}
+                    onPress={() => {
+                      if (activeTab === 'video') {
+                        router.push({
+                          pathname: '/live/video',
+                          params: {
+                            title: item.title,
+                            user: item.user,
+                            location: item.location,
+                            views: (item as any).views,
+                            image: JSON.stringify(item.image)
+                          }
+                        });
+                      } else {
+                        router.push({
+                          pathname: '/live/audio',
+                          params: {
+                            title: item.title,
+                            user: item.user,
+                            location: item.location,
+                            listeners: (item as any).listeners,
+                            image: JSON.stringify(item.image)
+                          }
+                        });
+                      }
+                    }}
+                  >
+                    {activeTab === 'video' && <Image source={item.image} style={styles.videoImage} />}
+                    {activeTab === 'audio' && (
+                      <View style={styles.audioOverlay}>
+                        <View style={styles.audioProfileContainer}>
+                          <Image source={item.image} style={styles.audioProfileImage} />
+                          <View style={styles.liveIndicator}>
+                            <ThemedText style={styles.liveText}>LIVE</ThemedText>
+                          </View>
+                        </View>
+                      </View>
+                    )}
+                    <View style={styles.smallCardOverlay}>
+                      <ThemedText style={styles.smallCardTitle}>{item.user}</ThemedText>
+                      <TouchableOpacity 
+                        style={styles.smallFollowButton}
+                        onPress={() => handleFollow(item.id)}
+                      >
+                        <ThemedText style={styles.smallFollowText}>
+                          {followedUsers.includes(item.id) ? 'Following' : 'Follow'}
+                        </ThemedText>
+                      </TouchableOpacity>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+            
+            {/* Remaining cards in normal grid */}
+            <View style={styles.videoGrid}>
+              {(activeTab === 'video' ? videos : audioStreams).slice(3).map((item, index) => (
+                <TouchableOpacity 
+                  key={item.id} 
+                  style={styles.videoCard}
+                  onPress={() => {
+                    if (activeTab === 'video') {
+                      router.push({
+                        pathname: '/live/video',
+                        params: {
+                          title: item.title,
+                          user: item.user,
+                          location: item.location,
+                          views: (item as any).views,
+                          image: JSON.stringify(item.image)
+                        }
+                      });
+                    } else {
+                      router.push({
+                        pathname: '/live/audio',
+                        params: {
+                          title: item.title,
+                          user: item.user,
+                          location: item.location,
+                          listeners: (item as any).listeners,
+                          image: JSON.stringify(item.image)
+                        }
+                      });
+                    }
+                  }}
+                >
+                  {activeTab === 'video' && <Image source={item.image} style={styles.videoImage} />}
+                  {activeTab === 'audio' && (
+                    <View style={styles.audioOverlay}>
+                      <View style={styles.audioProfileContainer}>
+                        <Image source={item.image} style={styles.audioProfileImage} />
+                        <View style={styles.liveIndicator}>
+                          <ThemedText style={styles.liveText}>LIVE</ThemedText>
+                        </View>
+                      </View>
+                    </View>
+                  )}
+                  <View style={styles.videoOverlay}>
+                    <View style={styles.viewCount}>
+                      <ThemedText style={styles.viewText}>
+                        {activeTab === 'video' ? `👁 ${(item as any).views}` : `🎧 ${(item as any).listeners}`}
+                      </ThemedText>
+                    </View>
+                    <View style={styles.videoInfo}>
+                      <ThemedText style={styles.videoTitle}>{item.title}</ThemedText>
+                      <View style={styles.userInfo}>
+                        <Image source={item.image} style={styles.userAvatar} />
+                        <View style={styles.userDetails}>
+                          <ThemedText style={styles.userName}>{item.user}</ThemedText>
+                          <ThemedText style={styles.userLocation}>{item.location}</ThemedText>
+                        </View>
+                        <TouchableOpacity 
+                          style={[
+                            styles.followButton,
+                            followedUsers.includes(item.id) && styles.followingButton
+                          ]}
+                          onPress={() => handleFollow(item.id)}
+                        >
+                          <ThemedText style={styles.followText}>
+                            {followedUsers.includes(item.id) ? 'Following' : 'Follow'}
+                          </ThemedText>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        )}
       </ScrollView>
     </ThemedView>
   );
@@ -310,7 +465,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
   },
   bannerContainer: {
     marginBottom: 20,
@@ -319,9 +474,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   featuredVideo: {
-    width: width - 40,
-    height: width * 0.35,
-    borderRadius: 15,
+    width: width - 32,
+    height: (width - 32) * 0.4,
+    borderRadius: 16,
     overflow: 'hidden',
     marginRight: 15,
     position: 'relative',
@@ -350,20 +505,72 @@ const styles = StyleSheet.create({
     height: 40,
     resizeMode: 'contain',
   },
+  specialGrid: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 16,
+  },
+  leftColumn: {
+    flex: 1,
+  },
+  rightColumn: {
+    flex: 1,
+    gap: 8,
+  },
+  largeCard: {
+    width: '100%',
+    height: (width - 48) / 2 * 1.3,
+    borderRadius: 16,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  smallCard: {
+    width: '100%',
+    height: ((width - 48) / 2 * 1.3 - 8) / 2,
+    borderRadius: 16,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  smallCardOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    padding: 6,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  smallCardTitle: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  smallFollowButton: {
+    backgroundColor: Colors.light.primary,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  smallFollowText: {
+    color: 'white',
+    fontSize: 8,
+    fontWeight: '600',
+  },
   videoGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 15,
+    justifyContent: 'space-between',
+    gap: 8,
   },
   videoCard: {
-    width: (width - 55) / 2,
-    height: (width - 55) / 2 * 1.2,
-    borderRadius: 15,
+    width: (width - 48) / 2,
+    height: (width - 48) / 2 * 1.3,
+    borderRadius: 16,
     overflow: 'hidden',
     position: 'relative',
-    borderWidth: 2,
-    borderColor: Colors.light.primary,
+    marginBottom: 12,
   },
   videoImage: {
     width: '100%',
