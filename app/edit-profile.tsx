@@ -1,16 +1,19 @@
+import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StatusBar,
   StyleSheet,
-  View,
   Text,
   TextInput,
   TouchableOpacity,
-  Image,
-  StatusBar,
+  View,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import * as ImagePicker from 'expo-image-picker';
 import { useProfile } from '../contexts/ProfileContext';
 
 export default function EditProfileScreen() {
@@ -44,7 +47,10 @@ export default function EditProfileScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView 
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
       <StatusBar barStyle="dark-content" />
       
       {/* Header */}
@@ -56,49 +62,51 @@ export default function EditProfileScreen() {
         <View style={styles.placeholder} />
       </View>
       
-      {/* Profile Image */}
-      <View style={styles.profileImageSection}>
-        <View style={styles.profileImageContainer}>
-          <Image source={{ uri: profileImage }} style={styles.profileImage} />
-          <TouchableOpacity style={styles.editImageButton} onPress={pickImage}>
-            <Ionicons name="add" size={20} color="white" />
-          </TouchableOpacity>
-        </View>
-      </View>
-      
-      {/* Form Fields */}
-      <View style={styles.formContainer}>
-        <View style={styles.fieldContainer}>
-          <Text style={styles.fieldLabel}>Name :</Text>
-          <TextInput
-            style={styles.textInput}
-            value={name}
-            onChangeText={setName}
-            placeholder="Enter your name"
-          />
+      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        {/* Profile Image */}
+        <View style={styles.profileImageSection}>
+          <View style={styles.profileImageContainer}>
+            <Image source={{ uri: profileImage }} style={styles.profileImage} />
+            <TouchableOpacity style={styles.editImageButton} onPress={pickImage}>
+              <Ionicons name="add" size={20} color="white" />
+            </TouchableOpacity>
+          </View>
         </View>
         
-        <View style={styles.fieldContainer}>
-          <Text style={styles.fieldLabel}>Bio :</Text>
-          <TextInput
-            style={styles.textInput}
-            value={bio}
-            onChangeText={setBio}
-            placeholder="Enter your bio"
-            multiline
-          />
+        {/* Form Fields */}
+        <View style={styles.formContainer}>
+          <View style={styles.fieldContainer}>
+            <Text style={styles.fieldLabel}>Name :</Text>
+            <TextInput
+              style={styles.textInput}
+              value={name}
+              onChangeText={setName}
+              placeholder="Enter your name"
+            />
+          </View>
+          
+          <View style={styles.fieldContainer}>
+            <Text style={styles.fieldLabel}>Bio :</Text>
+            <TextInput
+              style={styles.textInput}
+              value={bio}
+              onChangeText={setBio}
+              placeholder="Enter your bio"
+              multiline
+            />
+          </View>
+          
+          <View style={styles.fieldContainer}>
+            <Text style={styles.fieldLabel}>Location :</Text>
+            <TextInput
+              style={styles.textInput}
+              value={location}
+              onChangeText={setLocation}
+              placeholder="Enter your location"
+            />
+          </View>
         </View>
-        
-        <View style={styles.fieldContainer}>
-          <Text style={styles.fieldLabel}>Location :</Text>
-          <TextInput
-            style={styles.textInput}
-            value={location}
-            onChangeText={setLocation}
-            placeholder="Enter your location"
-          />
-        </View>
-      </View>
+      </ScrollView>
       
       {/* Save Button */}
       <View style={styles.buttonContainer}>
@@ -106,7 +114,7 @@ export default function EditProfileScreen() {
           <Text style={styles.saveButtonText}>Save Profile</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -170,10 +178,13 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: 'white',
   },
-  formContainer: {
+  scrollContainer: {
     flex: 1,
+  },
+  formContainer: {
     paddingHorizontal: 20,
     paddingTop: 20,
+    paddingBottom: 20,
   },
   fieldContainer: {
     marginBottom: 25,
@@ -196,7 +207,9 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     paddingHorizontal: 20,
-    paddingBottom: 40,
+    paddingTop: 15,
+    paddingBottom: 30,
+    backgroundColor: 'white',
   },
   saveButton: {
     backgroundColor: '#127d96',
