@@ -2,7 +2,7 @@ import { ThemedText } from '@/components/themed-text';
 import { Colors } from '@/constants/theme';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function AudioLiveScreen() {
   const params = useLocalSearchParams();
@@ -20,6 +20,7 @@ export default function AudioLiveScreen() {
   ]);
   const [messageText, setMessageText] = useState('');
   const [floatingHearts, setFloatingHearts] = useState<any[]>([]);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   
   const comments = [
     { id: 1, user: 'Johnson joy', message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50' },
@@ -56,6 +57,8 @@ export default function AudioLiveScreen() {
       };
       setLiveComments(prev => [...prev, newComment].slice(-5));
       setMessageText('');
+      // Dismiss keyboard after sending message
+      Keyboard.dismiss();
     }
   };
 
@@ -66,12 +69,25 @@ export default function AudioLiveScreen() {
       setLiveComments(prev => [...prev, newComment].slice(-5));
     }, 3000);
 
-    return () => clearInterval(interval);
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true);
+    });
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+    });
+
+    return () => {
+      clearInterval(interval);
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
   }, []);
 
   return (
-    <View 
+    <KeyboardAvoidingView 
       style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={0}
     >
       <Image 
         source={{ uri: 'https://images.unsplash.com/photo-1494790108755-2616c9c0e0e0?w=400' }}
@@ -123,7 +139,7 @@ export default function AudioLiveScreen() {
         </View>
       </View>
 
-      <View style={styles.audioVisualization}>
+      <View style={[styles.audioVisualization, { opacity: isKeyboardVisible ? 0.3 : 1 }]}>
         <View style={styles.profileContainer}>
           <Image 
             source={require('../../assets/images/audio image.webp')}
@@ -188,7 +204,7 @@ export default function AudioLiveScreen() {
         </View>
       </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -294,9 +310,9 @@ const styles = StyleSheet.create({
   },
   audioVisualization: {
     position: 'absolute',
-    top: '40%',
+    top: '50%',
     left: '50%',
-    transform: [{ translateX: -100 }, { translateY: -100 }],
+    transform: [{ translateX: -85 }, { translateY: -130 }],
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -332,10 +348,10 @@ const styles = StyleSheet.create({
   },
   commentsSection: {
     position: 'absolute',
-    bottom: 100,
+    bottom: 80,
     left: 5,
     right: 5,
-    height: 200,
+    height: 180,
     justifyContent: 'flex-end',
   },
   liveCommentItem: {
@@ -388,8 +404,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
     paddingHorizontal: 20,
-    paddingVertical: 15,
-    paddingBottom: 30,
+    paddingVertical: 10,
+    paddingBottom: 25,
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
   inputContainer: {
