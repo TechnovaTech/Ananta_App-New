@@ -2,7 +2,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
@@ -30,7 +30,9 @@ const BellIcon = ({ color }: { color: string }) => (
 
 export default function HomeScreen() {
   const [followedUsers, setFollowedUsers] = useState<number[]>([]);
-  const [activeTab, setActiveTab] = useState<'video' | 'audio' | 'followers' | 'following'>('video');
+  const [activeTab, setActiveTab] = useState<'video' | 'audio'>('video');
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const bannerScrollRef = useRef<ScrollView>(null);
 
   const handleFollow = (userId: number) => {
     setFollowedUsers(prev => 
@@ -39,6 +41,7 @@ export default function HomeScreen() {
         : [...prev, userId]
     );
   };
+  
   const bannerImages = [
     require('@/assets/images/xvv 1.png'),
     require('@/assets/images/h1.png.png'),
@@ -46,11 +49,31 @@ export default function HomeScreen() {
     require('@/assets/images/h3.png.png'),
   ];
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBannerIndex(prevIndex => {
+        const nextIndex = (prevIndex + 1) % bannerImages.length;
+        bannerScrollRef.current?.scrollTo({
+          x: nextIndex * width,
+          animated: true,
+        });
+        return nextIndex;
+      });
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [bannerImages.length]);
+
   const videos = [
     { id: 1, title: '#joy with life partner', user: 'Rachel James', location: 'India', views: '23K', image: require('@/assets/images/h1.png.png') },
     { id: 2, title: '#Alone Life', user: 'Micale Johans', location: 'India', views: '26B', image: require('@/assets/images/h2.png.png') },
     { id: 3, title: '#Smile can win', user: 'Dwayen jack', location: 'U.S.A', views: '23K', image: require('@/assets/images/h3.png.png') },
     { id: 4, title: '#Fashion adda', user: 'Jenny styler', location: 'Spain', views: '26B', image: require('@/assets/images/h4.png.png') },
+    { id: 5, title: '#New Star', user: 'Michel Saray', location: 'USA', views: '802', image: require('@/assets/images/h1.png.png') },
+    { id: 6, title: '#Global Show', user: 'Yullia Globe', location: 'UK', views: '7413', image: require('@/assets/images/h2.png.png') },
+    { id: 7, title: '#Click for fun', user: 'Erika Y', location: 'Spain', views: '1433', image: require('@/assets/images/h3.png.png') },
+    { id: 8, title: '#Haz clic para divertir', user: 'Anny Lu', location: 'Mexico', views: '539', image: require('@/assets/images/h4.png.png') },
+    { id: 9, title: '#Click for fun', user: 'Itsari_bitc1', location: 'Canada', views: '590', image: require('@/assets/images/h1.png.png') },
   ];
 
   const audioStreams = [
@@ -111,21 +134,32 @@ export default function HomeScreen() {
           <ThemedText style={[styles.tabText, activeTab === 'audio' && styles.activeTabText]}>Audio Live</ThemedText>
         </TouchableOpacity>
         <TouchableOpacity 
-          style={[styles.tab, activeTab === 'followers' && styles.activeTab]}
-          onPress={() => setActiveTab('followers')}
+          style={styles.tab}
+          onPress={() => router.push('/followers')}
         >
-          <ThemedText style={[styles.tabText, activeTab === 'followers' && styles.activeTabText]}>Followers</ThemedText>
+          <ThemedText style={styles.tabText}>Followers</ThemedText>
         </TouchableOpacity>
         <TouchableOpacity 
-          style={[styles.tab, activeTab === 'following' && styles.activeTab]}
-          onPress={() => setActiveTab('following')}
+          style={styles.tab}
+          onPress={() => router.push('/following')}
         >
-          <ThemedText style={[styles.tabText, activeTab === 'following' && styles.activeTabText]}>Following</ThemedText>
+          <ThemedText style={styles.tabText}>Following</ThemedText>
         </TouchableOpacity>
       </View>
       
       <ScrollView style={styles.content}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} pagingEnabled style={styles.bannerContainer}>
+        <ScrollView 
+          ref={bannerScrollRef}
+          horizontal 
+          showsHorizontalScrollIndicator={false} 
+          pagingEnabled 
+          style={styles.bannerContainer}
+          contentContainerStyle={styles.bannerContent}
+          onMomentumScrollEnd={(event) => {
+            const newIndex = Math.round(event.nativeEvent.contentOffset.x / width);
+            setCurrentBannerIndex(newIndex);
+          }}
+        >
           {bannerImages.map((image, index) => (
             <View key={index} style={styles.featuredVideo}>
               <Image source={image} style={styles.featuredImage} />
@@ -208,22 +242,6 @@ export default function HomeScreen() {
               </View>
             </TouchableOpacity>
           ))}
-          {(activeTab === 'followers' || activeTab === 'following') && (
-            <View style={styles.usersList}>
-              {(activeTab === 'followers' ? followersData : followingData).map((user) => (
-                <View key={user.id} style={styles.userItem}>
-                  <Image source={user.image} style={styles.profileImage} />
-                  <View style={styles.userNameContainer}>
-                    <ThemedText style={styles.profileName}>{user.name}</ThemedText>
-                    <ThemedText style={styles.profileUsername}>{user.username}</ThemedText>
-                  </View>
-                  <TouchableOpacity style={styles.messageButton}>
-                    <ThemedText style={styles.messageText}>Message</ThemedText>
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
-          )}
         </View>
       </ScrollView>
     </ThemedView>
@@ -297,9 +315,12 @@ const styles = StyleSheet.create({
   bannerContainer: {
     marginBottom: 20,
   },
+  bannerContent: {
+    alignItems: 'center',
+  },
   featuredVideo: {
     width: width - 40,
-    height: 130,
+    height: width * 0.35,
     borderRadius: 15,
     overflow: 'hidden',
     marginRight: 15,
@@ -332,11 +353,12 @@ const styles = StyleSheet.create({
   videoGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'center',
     gap: 15,
   },
   videoCard: {
-    width: '47%',
-    height: 200,
+    width: (width - 55) / 2,
+    height: (width - 55) / 2 * 1.2,
     borderRadius: 15,
     overflow: 'hidden',
     position: 'relative',
