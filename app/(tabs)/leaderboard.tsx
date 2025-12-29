@@ -56,15 +56,12 @@ export default function LeaderboardScreen() {
               </View>
             </View>
             <View style={styles.rightSection}>
-              <ThemedText style={styles.rankNumber}>{user.rank}</ThemedText>
+              <View style={[styles.rankBadge, { backgroundColor: '#FFD700' }]}>
+                <ThemedText style={styles.rankText}>{user.rank}</ThemedText>
+              </View>
               <View style={styles.trophySection}>
                 <View style={styles.trophyContainer}>
                   <ThemedText style={styles.trophyIcon}>🏆</ThemedText>
-                </View>
-                <View style={styles.stars}>
-                  <ThemedText style={styles.star}>★</ThemedText>
-                  <ThemedText style={styles.star}>★</ThemedText>
-                  <ThemedText style={styles.star}>★</ThemedText>
                 </View>
               </View>
             </View>
@@ -90,11 +87,6 @@ export default function LeaderboardScreen() {
               <View style={styles.trophySection}>
                 <View style={styles.trophyContainer}>
                   <ThemedText style={styles.trophyIcon}>🏆</ThemedText>
-                </View>
-                <View style={styles.stars}>
-                  <ThemedText style={styles.star}>★</ThemedText>
-                  <ThemedText style={styles.star}>★</ThemedText>
-                  <ThemedText style={styles.star}>★</ThemedText>
                 </View>
               </View>
             </View>
@@ -200,39 +192,55 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   rightSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
     position: 'relative',
-    width: 80,
-    height: 80,
+    width: 60,
+    height: 60,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    paddingBottom: 15,
   },
   rankNumber: {
-    fontSize: 80,
+    fontSize: 48,
     fontWeight: '900',
-    color: 'rgba(255,255,255,0.3)',
+    color: 'rgba(255,255,255,0.4)',
     position: 'absolute',
     right: 0,
-    top: -10,
+    top: 0,
     zIndex: 1,
   },
   trophySection: {
-    alignItems: 'center',
-    zIndex: 2,
     position: 'absolute',
-    right: 15,
-    top: 15,
+    right: 8,
+    bottom: 8,
+    zIndex: 2,
+    alignItems: 'center',
   },
-  trophyContainer: {
-    backgroundColor: '#1976D2',
-    width: 35,
-    height: 35,
-    borderRadius: 17.5,
+  rankBadge: {
+    position: 'absolute',
+    right: 5,
+    top: 5,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 4,
+    zIndex: 3,
+  },
+  rankText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  trophyContainer: {
+    backgroundColor: '#127d96',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   trophyIcon: {
-    fontSize: 18,
+    fontSize: 20,
   },
   stars: {
     flexDirection: 'row',
