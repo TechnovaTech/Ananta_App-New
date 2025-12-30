@@ -34,14 +34,12 @@ export default function LiveHistoryScreen() {
       <View style={styles.header}>
         <TouchableOpacity 
           style={styles.backButton}
-          onPress={() => router.push('/settings')}
+          onPress={() => router.push('/(tabs)/profile')}
         >
           <BackIcon />
         </TouchableOpacity>
-        <View style={styles.titleContainer}>
-          <ThemedText style={styles.title}>Live History</ThemedText>
-          <View style={styles.titleUnderline} />
-        </View>
+        <ThemedText style={styles.title}>Live Data & History</ThemedText>
+        <View style={styles.placeholder} />
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -67,28 +65,24 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingTop: 50,
     paddingBottom: 20,
     backgroundColor: 'white',
+    borderBottomWidth: 2,
+    borderBottomColor: '#127d96',
   },
   backButton: {
-    marginRight: 20,
     padding: 5,
   },
-  titleContainer: {
-    alignItems: 'flex-start',
+  placeholder: {
+    width: 24,
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: 'black',
-  },
-  titleUnderline: {
-    width: 80,
-    height: 2,
-    backgroundColor: Colors.light.primary,
-    marginTop: 4,
+    color: '#333',
   },
   content: {
     flex: 1,

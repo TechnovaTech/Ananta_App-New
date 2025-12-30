@@ -75,7 +75,6 @@ const LogoutIcon = () => (
 
 export default function SettingsScreen() {
   const settingsItems = [
-    { id: 1, title: 'Live data & History', icon: <ClockIcon /> },
     { id: 2, title: 'Help & Feedback', icon: <HelpIcon /> },
     { id: 3, title: 'Level', icon: <LevelIcon /> },
     { id: 4, title: 'Daily tasks', icon: <TaskIcon /> },
@@ -104,9 +103,7 @@ export default function SettingsScreen() {
             key={item.id} 
             style={styles.settingItem}
             onPress={() => {
-              if (item.title === 'Live data & History') {
-                router.push('/live-history');
-              } else if (item.title === 'Help & Feedback') {
+              if (item.title === 'Help & Feedback') {
                 router.push('/help-feedback');
               } else if (item.title === 'Level') {
                 router.push('/level-management');

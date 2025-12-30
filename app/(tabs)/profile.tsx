@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -8,6 +8,8 @@ import {
   StatusBar,
   ScrollView,
   Alert,
+  Modal,
+  TextInput,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -17,6 +19,11 @@ import { useProfile } from '../../contexts/ProfileContext';
 
 export default function ProfileScreen() {
   const { profileData, updateProfile } = useProfile();
+
+  const handleVerification = () => {
+    setIsVerified(!isVerified);
+    Alert.alert('Verification', isVerified ? 'Verification removed' : 'Account verified successfully!');
+  };
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -85,62 +92,59 @@ export default function ProfileScreen() {
           <Text style={styles.statNumber}>200</Text>
           <Text style={styles.statLabel}>Coins</Text>
         </View>
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>35</Text>
-          <Text style={styles.statLabel}>Diamonds</Text>
-        </View>
       </View>
       
       {/* Action buttons */}
       <View style={styles.actionGrid}>
         {/* First row - 3 icons */}
         <View style={styles.actionRow}>
-          <TouchableOpacity style={styles.actionButton}>
+          <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/verification')}>
             <View style={[styles.actionIcon, { backgroundColor: '#127d96' }]}>
-              <Ionicons name="person-outline" size={24} color="white" />
+              <Ionicons name="checkmark-circle-outline" size={24} color="white" />
             </View>
-            <Text style={styles.actionText}>Post</Text>
+            <Text style={styles.actionText}>Verify</Text>
           </TouchableOpacity>
           
-          <TouchableOpacity style={styles.actionButton}>
-            <View style={[styles.actionIcon, { backgroundColor: '#127d96' }]}>
-              <Ionicons name="cash-outline" size={24} color="white" />
-            </View>
-            <Text style={styles.actionText}>Earnings</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.actionButton}>
-            <View style={[styles.actionIcon, { backgroundColor: '#127d96' }]}>
-              <Ionicons name="card-outline" size={24} color="white" />
-            </View>
-            <Text style={styles.actionText}>Recharge</Text>
-          </TouchableOpacity>
-        </View>
-        
-        {/* Second row - 3 icons */}
-        <View style={styles.actionRow}>
-          <TouchableOpacity style={styles.actionButton}>
-            <View style={[styles.actionIcon, { backgroundColor: '#127d96' }]}>
-              <Ionicons name="chatbubbles-outline" size={24} color="white" />
-            </View>
-            <Text style={styles.actionText}>Messages</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.actionButton}>
+          <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/live-history')}>
             <View style={[styles.actionIcon, { backgroundColor: '#127d96' }]}>
               <Ionicons name="bar-chart-outline" size={24} color="white" />
             </View>
             <Text style={styles.actionText}>Live Data</Text>
           </TouchableOpacity>
           
-          <TouchableOpacity style={styles.actionButton}>
+          <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/messages')}>
             <View style={[styles.actionIcon, { backgroundColor: '#127d96' }]}>
-              <Ionicons name="checkmark-circle-outline" size={24} color="white" />
+              <Ionicons name="chatbubbles-outline" size={24} color="white" />
             </View>
-            <Text style={styles.actionText}>Verify</Text>
+            <Text style={styles.actionText}>Messages</Text>
+          </TouchableOpacity>
+        </View>
+        
+        {/* Second row - 3 icons */}
+        <View style={styles.actionRow}>
+          <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/post')}>
+            <View style={[styles.actionIcon, { backgroundColor: '#127d96' }]}>
+              <Ionicons name="person-outline" size={24} color="white" />
+            </View>
+            <Text style={styles.actionText}>Post</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/earnings')}>
+            <View style={[styles.actionIcon, { backgroundColor: '#127d96' }]}>
+              <Ionicons name="cash-outline" size={24} color="white" />
+            </View>
+            <Text style={styles.actionText}>Earnings</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/recharge')}>
+            <View style={[styles.actionIcon, { backgroundColor: '#127d96' }]}>
+              <Ionicons name="card-outline" size={24} color="white" />
+            </View>
+            <Text style={styles.actionText}>Recharge</Text>
           </TouchableOpacity>
         </View>
       </View>
+
     </View>
   );
 }
