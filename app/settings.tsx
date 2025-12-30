@@ -1,8 +1,7 @@
-import { StyleSheet, ScrollView, TouchableOpacity, View, Dimensions, Text } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Colors } from '@/constants/theme';
 import { router } from 'expo-router';
+import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 const { width } = Dimensions.get('window');
@@ -79,7 +78,7 @@ export default function SettingsScreen() {
     { id: 3, title: 'Level', icon: <LevelIcon /> },
     { id: 4, title: 'Daily tasks', icon: <TaskIcon /> },
     { id: 5, title: 'Room admin', icon: <AdminIcon /> },
-    { id: 6, title: 'Entries & Fremes', icon: <FrameIcon /> },
+    { id: 6, title: 'Inventory', icon: <FrameIcon /> },
     { id: 7, title: 'Invitation Rewards', icon: <GiftIcon /> },
     { id: 8, title: 'Logout', icon: <LogoutIcon /> },
   ];

@@ -9,7 +9,17 @@ export const ProfileProvider = ({ children }) => {
     bio: 'It not easy without taking one word with life,',
     location: '',
     profileImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
-    headerBackground: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&h=400&fit=crop'
+    headerBackground: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&h=400&fit=crop',
+    gender: '',
+    profilePhoto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
+    coverPhoto: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&h=400&fit=crop',
+    birthday: '',
+    addressLine1: '',
+    city: '',
+    state: '',
+    country: '',
+    pinCode: '',
+    UserName: '@Micale clarke'
   });
 
   const updateProfile = (newData) => {

@@ -18,10 +18,18 @@ import { useProfile } from '../contexts/ProfileContext';
 
 export default function EditProfileScreen() {
   const { profileData, updateProfile } = useProfile();
-  const [profileImage, setProfileImage] = useState(profileData.profileImage);
+  const [profileImage, setProfileImage] = useState(profileData.profilePhoto || profileData.profileImage);
   const [name, setName] = useState(profileData.name);
   const [bio, setBio] = useState(profileData.bio);
   const [location, setLocation] = useState(profileData.location);
+  const [gender, setGender] = useState(profileData.gender);
+  const [birthday, setBirthday] = useState(profileData.birthday);
+  const [addressLine1, setAddressLine1] = useState(profileData.addressLine1);
+  const [city, setCity] = useState(profileData.city);
+  const [state, setState] = useState(profileData.state);
+  const [country, setCountry] = useState(profileData.country);
+  const [pinCode, setPinCode] = useState(profileData.pinCode);
+  const [userName, setUserName] = useState(profileData.UserName);
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -41,7 +49,16 @@ export default function EditProfileScreen() {
       name,
       bio,
       location,
-      profileImage
+      profileImage,
+      profilePhoto: profileImage,
+      gender,
+      birthday,
+      addressLine1,
+      city,
+      state,
+      country,
+      pinCode,
+      UserName: userName
     });
     router.back();
   };
@@ -75,35 +92,131 @@ export default function EditProfileScreen() {
         
         {/* Form Fields */}
         <View style={styles.formContainer}>
-          <View style={styles.fieldContainer}>
-            <Text style={styles.fieldLabel}>Name :</Text>
-            <TextInput
-              style={styles.textInput}
-              value={name}
-              onChangeText={setName}
-              placeholder="Enter your name"
-            />
+          {/* Personal Information */}
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Personal Information</Text>
+            
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldLabel}>Username :</Text>
+              <TextInput
+                style={styles.textInput}
+                value={userName}
+                onChangeText={setUserName}
+                placeholder="Enter your username"
+              />
+            </View>
+            
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldLabel}>Name :</Text>
+              <TextInput
+                style={styles.textInput}
+                value={name}
+                onChangeText={setName}
+                placeholder="Enter your name"
+              />
+            </View>
+            
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldLabel}>Gender :</Text>
+              <TextInput
+                style={styles.textInput}
+                value={gender}
+                onChangeText={setGender}
+                placeholder="Enter your gender"
+              />
+            </View>
+            
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldLabel}>Birthday :</Text>
+              <TextInput
+                style={styles.textInput}
+                value={birthday}
+                onChangeText={setBirthday}
+                placeholder="Enter your birthday (DD/MM/YYYY)"
+              />
+            </View>
+            
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldLabel}>Bio :</Text>
+              <TextInput
+                style={styles.textInput}
+                value={bio}
+                onChangeText={setBio}
+                placeholder="Enter your bio"
+                multiline
+              />
+            </View>
           </View>
           
-          <View style={styles.fieldContainer}>
-            <Text style={styles.fieldLabel}>Bio :</Text>
-            <TextInput
-              style={styles.textInput}
-              value={bio}
-              onChangeText={setBio}
-              placeholder="Enter your bio"
-              multiline
-            />
+          {/* Address Information */}
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Address Information</Text>
+            
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldLabel}>Address Line 1 :</Text>
+              <TextInput
+                style={styles.textInput}
+                value={addressLine1}
+                onChangeText={setAddressLine1}
+                placeholder="Enter your address"
+              />
+            </View>
+            
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldLabel}>City :</Text>
+              <TextInput
+                style={styles.textInput}
+                value={city}
+                onChangeText={setCity}
+                placeholder="Enter your city"
+              />
+            </View>
+            
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldLabel}>State :</Text>
+              <TextInput
+                style={styles.textInput}
+                value={state}
+                onChangeText={setState}
+                placeholder="Enter your state"
+              />
+            </View>
+            
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldLabel}>Country :</Text>
+              <TextInput
+                style={styles.textInput}
+                value={country}
+                onChangeText={setCountry}
+                placeholder="Enter your country"
+              />
+            </View>
+            
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldLabel}>Pin Code :</Text>
+              <TextInput
+                style={styles.textInput}
+                value={pinCode}
+                onChangeText={setPinCode}
+                placeholder="Enter your pin code"
+                keyboardType="numeric"
+              />
+            </View>
           </View>
           
-          <View style={styles.fieldContainer}>
-            <Text style={styles.fieldLabel}>Location :</Text>
-            <TextInput
-              style={styles.textInput}
-              value={location}
-              onChangeText={setLocation}
-              placeholder="Enter your location"
-            />
+          {/* Other Information */}
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Other Information</Text>
+            
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldLabel}>Location :</Text>
+              <TextInput
+                style={styles.textInput}
+                value={location}
+                onChangeText={setLocation}
+                placeholder="Enter your location"
+              />
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -186,8 +299,22 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
   },
+  sectionContainer: {
+    marginBottom: 30,
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
   fieldContainer: {
-    marginBottom: 25,
+    marginBottom: 20,
   },
   fieldLabel: {
     fontSize: 16,

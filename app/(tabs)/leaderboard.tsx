@@ -56,8 +56,11 @@ export default function LeaderboardScreen() {
               </View>
             </View>
             <View style={styles.rightSection}>
-              <View style={[styles.rankBadge, { backgroundColor: '#FFD700' }]}>
-                <ThemedText style={styles.rankText}>{user.rank}</ThemedText>
+              <ThemedText style={styles.rankNumber}>{user.rank}</ThemedText>
+              <View style={styles.stars}>
+                <ThemedText style={styles.star}>★</ThemedText>
+                <ThemedText style={styles.star}>★</ThemedText>
+                <ThemedText style={styles.star}>★</ThemedText>
               </View>
               <View style={styles.trophySection}>
                 <View style={styles.trophyContainer}>
@@ -84,6 +87,11 @@ export default function LeaderboardScreen() {
               </View>
             </View>
             <View style={styles.rightSection}>
+              <View style={styles.stars}>
+                <ThemedText style={styles.star}>★</ThemedText>
+                <ThemedText style={styles.star}>★</ThemedText>
+                <ThemedText style={styles.star}>★</ThemedText>
+              </View>
               <View style={styles.trophySection}>
                 <View style={styles.trophyContainer}>
                   <ThemedText style={styles.trophyIcon}>🏆</ThemedText>
@@ -140,7 +148,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginBottom: 12,
     position: 'relative',
-    overflow: 'hidden',
+    overflow: 'visible',
   },
   userImage: {
     width: 50,
@@ -193,26 +201,25 @@ const styles = StyleSheet.create({
   },
   rightSection: {
     position: 'relative',
-    width: 60,
-    height: 60,
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    paddingBottom: 15,
+    width: 100,
+    height: 90,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   rankNumber: {
-    fontSize: 48,
+    fontSize: 70,
     fontWeight: '900',
-    color: 'rgba(255,255,255,0.4)',
+    color: 'rgba(255,255,255,0.25)',
     position: 'absolute',
-    right: 0,
-    top: 0,
+    right: 10,
+    top: -10,
     zIndex: 1,
   },
   trophySection: {
     position: 'absolute',
-    right: 8,
-    bottom: 8,
-    zIndex: 2,
+    right: 15,
+    bottom: 10,
+    zIndex: 3,
     alignItems: 'center',
   },
   rankBadge: {
@@ -244,12 +251,15 @@ const styles = StyleSheet.create({
   },
   stars: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    position: 'absolute',
+    right: 5,
+    top: 5,
+    zIndex: 2,
   },
   star: {
-    fontSize: 8,
+    fontSize: 10,
     color: '#FFD700',
-    marginHorizontal: 0.5,
+    marginHorizontal: 1,
   },
   divider: {
     height: 1,
