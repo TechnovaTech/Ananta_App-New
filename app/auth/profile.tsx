@@ -330,17 +330,6 @@ const styles = StyleSheet.create({
   },
   sectionContainer: {
     marginBottom: 25,
-    backgroundColor: 'white',
-    borderRadius: 15,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
   },
   sectionTitle: {
     fontSize: 18,
@@ -348,9 +337,6 @@ const styles = StyleSheet.create({
     color: Colors.light.primary,
     marginBottom: 20,
     textAlign: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: Colors.light.primary,
-    paddingBottom: 10,
   },
   formContainer: {
     marginBottom: 20,
