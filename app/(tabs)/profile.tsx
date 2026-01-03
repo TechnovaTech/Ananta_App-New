@@ -35,7 +35,7 @@ export default function ProfileScreen() {
     }
   };
   return (
-    <View style={[styles.container, { backgroundColor: isDark ? '#1a1a1a' : '#f8f9fa' }]}>
+    <ScrollView style={[styles.container, { backgroundColor: isDark ? '#1a1a1a' : '#f8f9fa' }]} showsVerticalScrollIndicator={false}>
       <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
       
       {/* Header with background image */}
@@ -142,7 +142,7 @@ export default function ProfileScreen() {
         </View>
       </View>
 
-    </View>
+    </ScrollView>
   );
 }
 

@@ -23,6 +23,12 @@ export default function ProfileScreen() {
   const [state, setState] = useState('');
   const [country, setCountry] = useState('');
   const [pinCode, setPinCode] = useState('');
+  
+  // KYC states
+  const [kycProfileImage, setKycProfileImage] = useState<string | null>(null);
+  const [idImage, setIdImage] = useState<string | null>(null);
+  const [document1, setDocument1] = useState<string | null>(null);
+  const [document2, setDocument2] = useState<string | null>(null);
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -40,6 +46,39 @@ export default function ProfileScreen() {
 
     if (!result.canceled) {
       setProfileImage(result.assets[0].uri);
+    }
+  };
+
+  const pickKycImage = async (type: 'profile' | 'id' | 'doc1' | 'doc2') => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission needed', 'Sorry, we need camera roll permissions to select an image.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const uri = result.assets[0].uri;
+      switch (type) {
+        case 'profile':
+          setKycProfileImage(uri);
+          break;
+        case 'id':
+          setIdImage(uri);
+          break;
+        case 'doc1':
+          setDocument1(uri);
+          break;
+        case 'doc2':
+          setDocument2(uri);
+          break;
+      }
     }
   };
 
@@ -247,6 +286,77 @@ export default function ProfileScreen() {
             />
           </View>
         </View>
+        
+        {/* KYC Section */}
+        <View style={styles.sectionContainer}>
+          <ThemedText style={[styles.sectionTitle, { color: isDark ? 'white' : Colors.light.primary }]}>KYC Verification</ThemedText>
+          
+          {/* Profile Photo */}
+          <View style={[styles.kycSection, { backgroundColor: isDark ? '#333' : 'white', borderColor: isDark ? '#555' : '#e9ecef' }]}>
+            <ThemedText style={[styles.kycSectionTitle, { color: isDark ? 'white' : '#333' }]}>Profile Photo</ThemedText>
+            <TouchableOpacity 
+              style={[styles.imageUpload, { borderColor: isDark ? '#555' : '#ddd' }]}
+              onPress={() => pickKycImage('profile')}
+            >
+              {kycProfileImage ? (
+                <Image source={{ uri: kycProfileImage }} style={styles.uploadedImage} />
+              ) : (
+                <View style={styles.uploadPlaceholder}>
+                  <Ionicons name="camera" size={30} color={isDark ? '#666' : '#999'} />
+                  <ThemedText style={[styles.uploadText, { color: isDark ? '#666' : '#999' }]}>Tap to upload</ThemedText>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
+
+          {/* ID Document */}
+          <View style={[styles.kycSection, { backgroundColor: isDark ? '#333' : 'white', borderColor: isDark ? '#555' : '#e9ecef' }]}>
+            <ThemedText style={[styles.kycSectionTitle, { color: isDark ? 'white' : '#333' }]}>ID Document Photo</ThemedText>
+            <TouchableOpacity 
+              style={[styles.imageUpload, { borderColor: isDark ? '#555' : '#ddd' }]}
+              onPress={() => pickKycImage('id')}
+            >
+              {idImage ? (
+                <Image source={{ uri: idImage }} style={styles.uploadedImage} />
+              ) : (
+                <View style={styles.uploadPlaceholder}>
+                  <Ionicons name="card" size={30} color={isDark ? '#666' : '#999'} />
+                  <ThemedText style={[styles.uploadText, { color: isDark ? '#666' : '#999' }]}>Tap to upload ID</ThemedText>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
+
+          {/* Address Proof */}
+          <View style={[styles.kycSection, { backgroundColor: isDark ? '#333' : 'white', borderColor: isDark ? '#555' : '#e9ecef' }]}>
+            <ThemedText style={[styles.kycSectionTitle, { color: isDark ? 'white' : '#333' }]}>Address Proof</ThemedText>
+            <TouchableOpacity 
+              style={[styles.fileUpload, { borderColor: isDark ? '#555' : '#ddd', backgroundColor: isDark ? '#444' : '#f8f9fa' }]}
+              onPress={() => pickKycImage('doc1')}
+            >
+              <Ionicons name="document" size={20} color={Colors.light.primary} />
+              <ThemedText style={[styles.fileName, { color: isDark ? 'white' : '#333' }]}>
+                {document1 ? 'Document uploaded' : 'Choose file'}
+              </ThemedText>
+              <Ionicons name="cloud-upload" size={16} color={isDark ? '#666' : '#999'} />
+            </TouchableOpacity>
+          </View>
+
+          {/* Income Proof */}
+          <View style={[styles.kycSection, { backgroundColor: isDark ? '#333' : 'white', borderColor: isDark ? '#555' : '#e9ecef' }]}>
+            <ThemedText style={[styles.kycSectionTitle, { color: isDark ? 'white' : '#333' }]}>Income Proof</ThemedText>
+            <TouchableOpacity 
+              style={[styles.fileUpload, { borderColor: isDark ? '#555' : '#ddd', backgroundColor: isDark ? '#444' : '#f8f9fa' }]}
+              onPress={() => pickKycImage('doc2')}
+            >
+              <Ionicons name="document-text" size={20} color={Colors.light.primary} />
+              <ThemedText style={[styles.fileName, { color: isDark ? 'white' : '#333' }]}>
+                {document2 ? 'Document uploaded' : 'Choose file'}
+              </ThemedText>
+              <Ionicons name="cloud-upload" size={16} color={isDark ? '#666' : '#999'} />
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
       
           <TouchableOpacity 
@@ -376,5 +486,49 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: '600',
+  },
+  kycSection: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 15,
+    borderWidth: 1,
+  },
+  kycSectionTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  imageUpload: {
+    height: 100,
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  uploadedImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 6,
+  },
+  uploadPlaceholder: {
+    alignItems: 'center',
+  },
+  uploadText: {
+    marginTop: 5,
+    fontSize: 12,
+  },
+  fileUpload: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderWidth: 1,
+    borderRadius: 8,
+    gap: 8,
+  },
+  fileName: {
+    flex: 1,
+    fontSize: 14,
   },
 });
