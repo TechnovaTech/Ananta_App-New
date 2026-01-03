@@ -4,7 +4,7 @@ import { Colors } from '@/constants/theme';
 import { router } from 'expo-router';
 import { useState, useEffect, useRef } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg, { Path, Circle } from 'react-native-svg';
 import { useTheme } from '@/contexts/ThemeContext';
 
 const { width } = Dimensions.get('window');
@@ -26,6 +26,14 @@ const BellIcon = ({ color, isDark }: { color: string; isDark?: boolean }) => (
   <Svg width="20" height="20" viewBox="0 0 24 24" fill="none">
     <Path d="M18 8C18 6.4087 17.3679 4.88258 16.2426 3.75736C15.1174 2.63214 13.5913 2 12 2C10.4087 2 8.88258 2.63214 7.75736 3.75736C6.63214 4.88258 6 6.4087 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8Z" stroke={isDark ? '#127D96' : color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     <Path d="M13.73 21C13.5542 21.3031 13.3019 21.5547 12.9982 21.7295C12.6946 21.9044 12.3504 21.9965 12 21.9965C11.6496 21.9965 11.3054 21.9044 11.0018 21.7295C10.6982 21.5547 10.4458 21.3031 10.27 21" stroke={isDark ? '#127D96' : color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </Svg>
+);
+
+const WalletIcon = ({ color, isDark }: { color: string; isDark?: boolean }) => (
+  <Svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+    <Path d="M17 9V7C17 5.89543 16.1046 5 15 5H5C3.89543 5 3 5.89543 3 7V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V11C21 9.89543 20.1046 9 19 9H17Z" stroke={isDark ? '#FF6B35' : color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <Path d="M17 9H19C20.1046 9 21 9.89543 21 11V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V7C3 5.89543 3.89543 5 5 5H15C16.1046 5 17 5.89543 17 7V9Z" stroke={isDark ? '#FF6B35' : color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <Circle cx="18" cy="14" r="1" fill={isDark ? '#FF6B35' : color}/>
   </Svg>
 );
 
@@ -130,6 +138,9 @@ export default function HomeScreen() {
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/notification')}>
             <BellIcon color="#127D96" isDark={isDark} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/wallet')}>
+            <WalletIcon color="#127D96" isDark={isDark} />
           </TouchableOpacity>
         </View>
       </View>

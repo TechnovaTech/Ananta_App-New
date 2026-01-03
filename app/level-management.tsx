@@ -1,10 +1,12 @@
-import { StyleSheet, ScrollView, TouchableOpacity, View, Dimensions } from 'react-native';
+import { StyleSheet, ScrollView, TouchableOpacity, View, Dimensions, Animated } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
 import { router } from 'expo-router';
-import Svg, { Path } from 'react-native-svg';
+import Svg, { Path, Defs, LinearGradient as SvgGradient, Stop } from 'react-native-svg';
 import { useTheme } from '../contexts/ThemeContext';
+import { useState, useEffect, useRef } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
 
@@ -14,102 +16,294 @@ const BackIcon = ({ color = 'black' }) => (
   </Svg>
 );
 
-const CrownIcon = () => (
-  <Svg width="60" height="60" viewBox="0 0 24 24" fill="none">
-    <Path d="M5 16L3 8L8 11L12 5L16 11L21 8L19 16H5Z" fill="#FFD700" stroke="#FFA500" strokeWidth="1"/>
-    <Path d="M5 16H19V18H5V16Z" fill="#FFD700"/>
+const StarIcon = ({ size = 24, color = '#FFD700' }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill={color}/>
   </Svg>
 );
 
-const HeartIcon = () => (
-  <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-    <Path d="M20.84 4.61C20.3292 4.099 19.7228 3.69364 19.0554 3.41708C18.3879 3.14052 17.6725 2.99817 16.95 2.99817C16.2275 2.99817 15.5121 3.14052 14.8446 3.41708C14.1772 3.69364 13.5708 4.099 13.06 4.61L12 5.67L10.94 4.61C9.9083 3.5783 8.50903 2.9987 7.05 2.9987C5.59096 2.9987 4.19169 3.5783 3.16 4.61C2.1283 5.6417 1.5487 7.041 1.5487 8.5C1.5487 9.959 2.1283 11.3583 3.16 12.39L12 21.23L20.84 12.39C21.351 11.8792 21.7563 11.2728 22.0329 10.6053C22.3095 9.93789 22.4518 9.22248 22.4518 8.5C22.4518 7.77752 22.3095 7.06211 22.0329 6.39467C21.7563 5.72723 21.351 5.1208 20.84 4.61Z" fill="#FFD700"/>
+const TrophyIcon = ({ size = 20, color = '#FFD700' }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path d="M6 9C6 10.45 6.39 11.8 7.07 12.96C7.75 14.12 8.69 15.04 9.83 15.62C10.97 16.2 12.26 16.41 13.51 16.23C14.76 16.05 15.93 15.5 16.85 14.64C17.77 13.78 18.4 12.66 18.66 11.42C18.92 10.18 18.79 8.89 18.29 7.72C17.79 6.55 16.94 5.56 15.85 4.85C14.76 4.14 13.49 3.75 12.2 3.75H6V9Z" fill={color}/>
+    <Path d="M12 15L8 19H16L12 15Z" fill={color}/>
+    <Path d="M8 19H16V21H8V19Z" fill={color}/>
   </Svg>
 );
 
-const GiftIcon = () => (
-  <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-    <Path d="M20 6H16.25C16.25 4.21 14.79 2.75 13 2.75C11.21 2.75 9.75 4.21 9.75 6H4C2.9 6 2 6.9 2 8V10C2 10.55 2.45 11 3 11H4V19C4 20.1 4.9 21 6 21H18C19.1 21 20 20.1 20 19V11H21C21.55 11 22 10.55 22 10V8C22 6.9 21.1 6 20 6Z" fill="#C0C0C0"/>
+const GiftIcon = ({ size = 20, color = '#FF6B6B' }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path d="M20 6H16.25C16.25 4.21 14.79 2.75 13 2.75C11.21 2.75 9.75 4.21 9.75 6H4C2.9 6 2 6.9 2 8V10C2 10.55 2.45 11 3 11H4V19C4 20.1 4.9 21 6 21H18C19.1 21 20 20.1 20 19V11H21C21.55 11 22 10.55 22 10V8C22 6.9 21.1 6 20 6Z" fill={color}/>
   </Svg>
 );
 
-const FrameIcon = () => (
-  <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-    <Path d="M21 3H3C1.9 3 1 3.9 1 5V19C1 20.1 1.9 21 3 21H21C22.1 21 23 20.1 23 19V5C23 3.9 22.1 3 21 3ZM21 19H3V5H21V19Z" fill="#C0C0C0"/>
-    <Path d="M5 7H19V17H5V7Z" fill="none" stroke="#C0C0C0" strokeWidth="1"/>
+const FrameIcon = ({ size = 20, color = '#4ECDC4' }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path d="M21 3H3C1.9 3 1 3.9 1 5V19C1 20.1 1.9 21 3 21H21C22.1 21 23 20.1 23 19V5C23 3.9 22.1 3 21 3ZM21 19H3V5H21V19Z" fill={color}/>
+    <Path d="M5 7H19V17H5V7Z" fill="none" stroke={color} strokeWidth="2"/>
   </Svg>
 );
+
+const ChatIcon = ({ size = 20, color = '#45B7D1' }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4 17.17V4H20V16Z" fill={color}/>
+    <Path d="M7 9H17V11H7V9ZM7 12H14V14H7V12Z" fill={color}/>
+  </Svg>
+);
+
+const CrownIcon = ({ size = 20, color = '#FFD700' }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path d="M5 16L3 8L8 11L12 5L16 11L21 8L19 16H5Z" fill={color}/>
+    <Path d="M5 16H19V18H5V16Z" fill={color}/>
+  </Svg>
+);
+
+const DiamondIcon = ({ size = 20, color = '#E74C3C' }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path d="M6 3H18L22 9L12 21L2 9L6 3Z" fill={color}/>
+    <Path d="M6 3L12 9L18 3" stroke="white" strokeWidth="1"/>
+    <Path d="M2 9L12 9L22 9" stroke="white" strokeWidth="1"/>
+  </Svg>
+);
+
+const VipIcon = ({ size = 20, color = '#9B59B6' }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill={color}/>
+    <Path d="M12 6V14M9 9L15 9" stroke="white" strokeWidth="1.5"/>
+  </Svg>
+);
+
+const LockIcon = ({ size = 20, color = '#666' }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path d="M18 11H6C4.9 11 4 11.9 4 13V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V13C20 11.9 19.1 11 18 11ZM12 17C11.4 17 11 16.6 11 16C11 15.4 11.4 15 12 15C12.6 15 13 15.4 13 16C13 16.6 12.6 17 12 17ZM15.1 11V8.5C15.1 6.6 13.4 5 11.6 5C9.8 5 8.1 6.6 8.1 8.5V11H6.1V8.5C6.1 5.5 8.7 3 11.6 3C14.5 3 17.1 5.5 17.1 8.5V11H15.1Z" fill={color}/>
+  </Svg>
+);
+
+const CheckIcon = ({ size = 20, color = '#00C851' }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z" fill={color}/>
+  </Svg>
+);
+
+// Level Badge Component
+const LevelBadge = ({ level, size = 'small', showStar = true }) => {
+  const badgeSize = size === 'large' ? 60 : size === 'medium' ? 40 : 24;
+  const fontSize = size === 'large' ? 20 : size === 'medium' ? 14 : 10;
+  
+  return (
+    <View style={[styles.levelBadgeContainer, { width: badgeSize, height: badgeSize }]}>
+      <LinearGradient
+        colors={['#FFD700', '#FFA500']}
+        style={[styles.levelBadge, { width: badgeSize, height: badgeSize, borderRadius: badgeSize / 2 }]}
+      >
+        <ThemedText style={[styles.levelBadgeText, { fontSize }]}>{level}</ThemedText>
+      </LinearGradient>
+      {showStar && (
+        <View style={styles.starBadge}>
+          <StarIcon size={size === 'large' ? 16 : 12} color="white" />
+        </View>
+      )}
+    </View>
+  );
+};
 
 export default function LevelManagementScreen() {
   const { isDark } = useTheme();
+  const progressAnim = useRef(new Animated.Value(0)).current;
   
+  // Mock user data
+  const [userLevel, setUserLevel] = useState({
+    currentLevel: 7,
+    currentXP: 2450,
+    nextLevelXP: 3000,
+    totalXP: 12450
+  });
+
+  // Mock levels data
+  const levels = [
+    { level: 1, requiredXP: 0, rewards: ['Welcome Badge'], icon: 'gift', color: '#4ECDC4' },
+    { level: 2, requiredXP: 100, rewards: ['Basic Frame'], icon: 'frame', color: '#45B7D1' },
+    { level: 3, requiredXP: 250, rewards: ['Bronze Badge'], icon: 'trophy', color: '#CD7F32' },
+    { level: 4, requiredXP: 500, rewards: ['Chat Colors'], icon: 'chat', color: '#45B7D1' },
+    { level: 5, requiredXP: 800, rewards: ['Silver Badge'], icon: 'trophy', color: '#C0C0C0' },
+    { level: 6, requiredXP: 1200, rewards: ['Premium Frame'], icon: 'frame', color: '#9B59B6' },
+    { level: 7, requiredXP: 1700, rewards: ['Gold Badge'], icon: 'trophy', color: '#FFD700' },
+    { level: 8, requiredXP: 2300, rewards: ['VIP Status'], icon: 'vip', color: '#9B59B6' },
+    { level: 9, requiredXP: 3000, rewards: ['Diamond Badge'], icon: 'diamond', color: '#E74C3C' },
+    { level: 10, requiredXP: 4000, rewards: ['Elite Frame'], icon: 'frame', color: '#FFD700' },
+    { level: 11, requiredXP: 5200, rewards: ['Master Badge'], icon: 'crown', color: '#FFD700' },
+    { level: 12, requiredXP: 6600, rewards: ['Legendary Status'], icon: 'crown', color: '#FF6B6B' },
+  ];
+
+  const progressPercentage = ((userLevel.currentXP - levels[userLevel.currentLevel - 1].requiredXP) / 
+    (userLevel.nextLevelXP - levels[userLevel.currentLevel - 1].requiredXP)) * 100;
+
+  const remainingXP = userLevel.nextLevelXP - userLevel.currentXP;
+
+  useEffect(() => {
+    Animated.timing(progressAnim, {
+      toValue: progressPercentage,
+      duration: 1500,
+      useNativeDriver: false,
+    }).start();
+  }, [progressPercentage]);
+
   return (
-    <ThemedView style={[styles.container, { backgroundColor: isDark ? '#1a1a1a' : 'white' }]}>
-      <View style={[styles.header, { backgroundColor: isDark ? '#333' : 'white' }]}>
+    <ThemedView style={[styles.container, { backgroundColor: isDark ? '#1a1a1a' : '#f8f9fa' }]}>
+      {/* Header */}
+      <View style={[styles.header, { backgroundColor: isDark ? '#2a2a2a' : 'white' }]}>
         <TouchableOpacity 
           style={styles.backButton}
-          onPress={() => router.push('/settings')}
+          onPress={() => router.back()}
         >
           <BackIcon color={isDark ? 'white' : 'black'} />
         </TouchableOpacity>
-        <View style={styles.titleContainer}>
-          <ThemedText style={[styles.title, { color: isDark ? 'white' : 'black' }]}>Level Management</ThemedText>
-          <View style={styles.titleUnderline} />
-        </View>
+        <ThemedText style={[styles.headerTitle, { color: isDark ? 'white' : '#333' }]}>Level Management</ThemedText>
+        <View style={styles.placeholder} />
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Main Level Card */}
-        <View style={styles.levelCard}>
+        {/* Current Level Card */}
+        <LinearGradient
+          colors={['#127d96', '#0a5d75', '#083d4f']}
+          style={styles.levelCard}
+        >
           <View style={styles.levelHeader}>
-            <View style={styles.userInfo}>
-              <ThemedText style={styles.userName}>Mr. Perfect billa</ThemedText>
-              <View style={styles.levelBadge}>
-                <ThemedText style={styles.levelNumber}>1</ThemedText>
+            <View style={styles.levelInfo}>
+              <LevelBadge level={userLevel.currentLevel} size="large" />
+              <View style={styles.levelTextContainer}>
+                <ThemedText style={styles.levelTitle}>Level {userLevel.currentLevel}</ThemedText>
+                <ThemedText style={styles.xpText}>
+                  XP: {userLevel.currentXP.toLocaleString()} / {userLevel.nextLevelXP.toLocaleString()}
+                </ThemedText>
               </View>
             </View>
-            <View style={styles.crownContainer}>
-              <CrownIcon />
-              <View style={styles.levelTag}>
-                <ThemedText style={styles.levelTagText}>LV.1</ThemedText>
-              </View>
+            <View style={styles.remainingXP}>
+              <ThemedText style={styles.remainingText}>{remainingXP} XP</ThemedText>
+              <ThemedText style={styles.remainingLabel}>to Level {userLevel.currentLevel + 1}</ThemedText>
             </View>
           </View>
-          
-          <View style={styles.progressSection}>
-            <ThemedText style={styles.progressText}>Lv.1 - Lv.2</ThemedText>
+
+          {/* Progress Bar */}
+          <View style={styles.progressContainer}>
             <View style={styles.progressBar}>
-              <View style={styles.progressFill} />
+              <Animated.View 
+                style={[
+                  styles.progressFill,
+                  {
+                    width: progressAnim.interpolate({
+                      inputRange: [0, 100],
+                      outputRange: ['0%', '100%'],
+                      extrapolate: 'clamp',
+                    }),
+                  }
+                ]}
+              />
             </View>
-            <ThemedText style={styles.expText}>1 Exp to Level Up!</ThemedText>
+            <ThemedText style={styles.progressText}>
+              {Math.round(progressPercentage)}% Complete
+            </ThemedText>
           </View>
+        </LinearGradient>
+
+        {/* Level Ladder */}
+        <View style={[styles.ladderContainer, { backgroundColor: isDark ? '#2a2a2a' : 'white' }]}>
+          <ThemedText style={[styles.sectionTitle, { color: isDark ? 'white' : '#333' }]}>
+            Level Ladder
+          </ThemedText>
+          
+          {levels.map((levelData, index) => {
+            const isCompleted = levelData.level < userLevel.currentLevel;
+            const isCurrent = levelData.level === userLevel.currentLevel;
+            const isLocked = levelData.level > userLevel.currentLevel;
+            
+            return (
+              <View 
+                key={levelData.level}
+                style={[
+                  styles.ladderItem,
+                  {
+                    backgroundColor: isCurrent 
+                      ? (isDark ? '#127d96' : '#e6f3f7')
+                      : (isDark ? '#333' : '#f8f9fa'),
+                    borderColor: isCurrent ? '#127d96' : (isDark ? '#555' : '#e0e0e0'),
+                    opacity: isLocked ? 0.6 : 1
+                  }
+                ]}
+              >
+                <View style={styles.ladderLeft}>
+                  <View style={styles.ladderIcon}>
+                    {isCompleted && <CheckIcon size={20} />}
+                    {isCurrent && <LevelBadge level={levelData.level} size="medium" showStar={false} />}
+                    {isLocked && <LockIcon size={20} color={isDark ? '#666' : '#999'} />}
+                  </View>
+                  <View style={styles.ladderInfo}>
+                    <ThemedText style={[
+                      styles.ladderLevel,
+                      { 
+                        color: isCurrent ? (isDark ? 'white' : '#127d96') : (isDark ? '#ccc' : '#333'),
+                        fontWeight: isCurrent ? 'bold' : 'normal'
+                      }
+                    ]}>
+                      Level {levelData.level}
+                    </ThemedText>
+                    <ThemedText style={[
+                      styles.ladderXP,
+                      { color: isDark ? '#999' : '#666' }
+                    ]}>
+                      {levelData.requiredXP.toLocaleString()} XP Required
+                    </ThemedText>
+                  </View>
+                </View>
+                
+                <View style={styles.ladderRight}>
+                  <View style={styles.rewardContainer}>
+                    {levelData.icon === 'gift' && <GiftIcon size={16} color={levelData.color} />}
+                    {levelData.icon === 'frame' && <FrameIcon size={16} color={levelData.color} />}
+                    {levelData.icon === 'trophy' && <TrophyIcon size={16} color={levelData.color} />}
+                    {levelData.icon === 'chat' && <ChatIcon size={16} color={levelData.color} />}
+                    {levelData.icon === 'crown' && <CrownIcon size={16} color={levelData.color} />}
+                    {levelData.icon === 'diamond' && <DiamondIcon size={16} color={levelData.color} />}
+                    {levelData.icon === 'vip' && <VipIcon size={16} color={levelData.color} />}
+                    <View style={[
+                      styles.rewardBadge,
+                      { 
+                        backgroundColor: isCompleted ? '#00C851' : (isCurrent ? levelData.color : '#999')
+                      }
+                    ]}>
+                      <ThemedText style={[
+                        styles.rewardText,
+                        { 
+                          color: isCompleted ? 'white' : (isCurrent ? (levelData.color === '#FFD700' ? 'black' : 'white') : 'white')
+                        }
+                      ]}>
+                        {levelData.rewards[0]}
+                      </ThemedText>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            );
+          })}
         </View>
 
-        {/* Level Management Section */}
-        <ThemedText style={[styles.sectionTitle, { color: isDark ? 'white' : 'black' }]}>Level Management</ThemedText>
-        
-        <View style={styles.rewardsGrid}>
-          <View style={styles.rewardItem}>
-            <HeartIcon />
-            <ThemedText style={[styles.rewardTitle, { color: isDark ? 'white' : 'black' }]}>Newbie gift</ThemedText>
-            <View style={[styles.rewardLevel, styles.unlockedLevel]}>
-              <ThemedText style={styles.unlockedLevelText}>Lv.1</ThemedText>
-            </View>
-          </View>
+        {/* Live Room Preview */}
+        <View style={[styles.previewContainer, { backgroundColor: isDark ? '#2a2a2a' : 'white' }]}>
+          <ThemedText style={[styles.sectionTitle, { color: isDark ? 'white' : '#333' }]}>
+            Live Room Preview
+          </ThemedText>
           
-          <View style={styles.rewardItem}>
-            <GiftIcon />
-            <ThemedText style={[styles.rewardTitle, { color: isDark ? 'white' : 'black' }]}>Level gift</ThemedText>
-            <View style={[styles.rewardLevel, styles.lockedLevel]}>
-              <ThemedText style={styles.lockedLevelText}>Lv.3</ThemedText>
+          <View style={[styles.userCard, { backgroundColor: isDark ? '#333' : '#f8f9fa' }]}>
+            <View style={styles.avatar}>
+              <ThemedText style={styles.avatarText}>👤</ThemedText>
             </View>
-          </View>
-          
-          <View style={styles.rewardItem}>
-            <FrameIcon />
-            <ThemedText style={[styles.rewardTitle, { color: isDark ? 'white' : 'black' }]}>Card frame</ThemedText>
-            <View style={[styles.rewardLevel, styles.lockedLevel]}>
-              <ThemedText style={styles.lockedLevelText}>Lv.5</ThemedText>
+            <View style={styles.userInfo}>
+              <ThemedText style={[styles.username, { color: isDark ? 'white' : '#333' }]}>
+                Your Username
+              </ThemedText>
+              <View style={styles.levelBadgeSmall}>
+                <ThemedText style={styles.levelBadgeSmallText}>Level {userLevel.currentLevel}</ThemedText>
+                <StarIcon size={12} color="#FFD700" />
+              </View>
             </View>
           </View>
         </View>
@@ -125,148 +319,231 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingTop: 50,
     paddingBottom: 20,
   },
   backButton: {
-    marginRight: 20,
     padding: 5,
   },
-  titleContainer: {
-    alignItems: 'flex-start',
-  },
-  title: {
+  headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
   },
-  titleUnderline: {
-    width: 140,
-    height: 2,
-    backgroundColor: Colors.light.primary,
-    marginTop: 4,
+  placeholder: {
+    width: 24,
   },
   content: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 10,
+    paddingTop: 20,
   },
   levelCard: {
-    backgroundColor: '#126996',
     borderRadius: 20,
-    padding: 20,
-    marginBottom: 30,
+    padding: 25,
+    marginBottom: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   levelHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     marginBottom: 20,
   },
-  userInfo: {
+  levelInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
   },
-  userName: {
+  levelTextContainer: {
+    marginLeft: 15,
+  },
+  levelTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 5,
+  },
+  xpText: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.9)',
+  },
+  remainingXP: {
+    alignItems: 'flex-end',
+  },
+  remainingText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 10,
+    color: '#FFD700',
   },
-  levelBadge: {
-    backgroundColor: '#00C851',
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  levelNumber: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  crownContainer: {
-    alignItems: 'center',
-    position: 'relative',
-  },
-  levelTag: {
-    backgroundColor: '#E91E63',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginTop: -10,
-  },
-  levelTagText: {
-    color: 'white',
+  remainingLabel: {
     fontSize: 12,
-    fontWeight: 'bold',
+    color: 'rgba(255,255,255,0.8)',
   },
-  progressSection: {
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.3)',
-    paddingTop: 15,
-  },
-  progressText: {
-    color: 'white',
-    fontSize: 14,
-    marginBottom: 8,
+  progressContainer: {
+    marginTop: 10,
   },
   progressBar: {
-    height: 6,
+    height: 8,
     backgroundColor: 'rgba(255,255,255,0.3)',
-    borderRadius: 3,
+    borderRadius: 4,
+    overflow: 'hidden',
     marginBottom: 8,
   },
   progressFill: {
     height: '100%',
-    width: '20%',
-    backgroundColor: '#00C851',
-    borderRadius: 3,
+    backgroundColor: '#FFD700',
+    borderRadius: 4,
   },
-  expText: {
-    color: 'white',
-    fontSize: 12,
+  progressText: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.9)',
+    textAlign: 'center',
+  },
+  ladderContainer: {
+    borderRadius: 15,
+    padding: 20,
+    marginBottom: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 20,
-  },
-  rewardsGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-  },
-  rewardItem: {
-    width: '30%',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  rewardTitle: {
-    fontSize: 12,
     textAlign: 'center',
-    marginVertical: 8,
-    fontWeight: 'bold',
   },
-  rewardLevel: {
-    paddingHorizontal: 12,
+  ladderItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 10,
+    borderWidth: 2,
+  },
+  ladderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  ladderIcon: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  ladderInfo: {
+    flex: 1,
+  },
+  ladderLevel: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  ladderXP: {
+    fontSize: 12,
+  },
+  ladderRight: {
+    alignItems: 'flex-end',
+  },
+  rewardBadge: {
+    paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
+    marginBottom: 4,
   },
-  unlockedLevel: {
-    backgroundColor: '#FFD700',
+  rewardText: {
+    fontSize: 10,
+    fontWeight: '600',
   },
-  lockedLevel: {
-    backgroundColor: '#C0C0C0',
+  rewardContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
-  unlockedLevelText: {
-    fontSize: 11,
-    fontWeight: '900',
-    color: 'black',
+  previewContainer: {
+    borderRadius: 15,
+    padding: 20,
+    marginBottom: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  lockedLevelText: {
-    fontSize: 11,
-    fontWeight: '900',
-    color: '#666',
+  userCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    borderRadius: 12,
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#127d96',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  avatarText: {
+    fontSize: 24,
+  },
+  userInfo: {
+    flex: 1,
+  },
+  username: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 5,
+  },
+  levelBadgeSmall: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#127d96',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  levelBadgeSmallText: {
+    fontSize: 12,
+    color: 'white',
+    fontWeight: '600',
+    marginRight: 4,
+  },
+  levelBadgeContainer: {
+    position: 'relative',
+  },
+  levelBadge: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  levelBadgeText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  starBadge: {
+    position: 'absolute',
+    top: -2,
+    right: -2,
+    backgroundColor: '#127d96',
+    borderRadius: 8,
+    padding: 2,
   },
 });
