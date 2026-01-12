@@ -56,18 +56,17 @@ export default function ProfileScreen() {
   const [showDocumentDropdown, setShowDocumentDropdown] = useState(false);
   const [showGenderDropdown, setShowGenderDropdown] = useState(false);
 
-  const documentTypes = ['Aadhaar Card', 'Passport', 'Driving License'];
+  const documentTypes = ['Aadhaar Card', 'PAN Card'];
   const genderOptions = ['Male', 'Female', 'Other'];
   const getPlaceholder = () => {
     switch (documentType) {
       case 'Aadhaar Card': return 'XXXX XXXX XXXX';
-      case 'Passport': return 'A1234567';
-      case 'Driving License': return 'DL-XXXXXXXXXX';
+      case 'PAN Card': return 'ABCDE1234F';
       default: return 'Enter document number';
     }
   };
 
-  const isBackImageRequired = documentType !== 'Passport';
+  const isBackImageRequired = true;
   const isFormValid = documentType && documentNumber && frontImage && (isBackImageRequired ? backImage : true);
 
   // Sample data
@@ -504,12 +503,11 @@ export default function ProfileScreen() {
           {/* Document Back Image */}
           <View style={[styles.imageSection, { backgroundColor: isDark ? '#333' : 'white', borderColor: isDark ? '#555' : '#e9ecef' }]}>
             <ThemedText style={[styles.imageSectionTitle, { color: isDark ? 'white' : '#333' }]}>
-              Document Back Image {isBackImageRequired ? '*' : '(Optional)'}
+              Document Back Image *
             </ThemedText>
             <TouchableOpacity 
-              style={[styles.imageUpload, { borderColor: isDark ? '#555' : '#ddd', opacity: documentType === 'Passport' ? 0.5 : 1 }]}
+              style={[styles.imageUpload, { borderColor: isDark ? '#555' : '#ddd' }]}
               onPress={() => pickKycImage('back')}
-              disabled={documentType === 'Passport'}
             >
               {backImage ? (
                 <View style={styles.imageContainer}>
@@ -525,7 +523,7 @@ export default function ProfileScreen() {
                 <View style={styles.uploadPlaceholder}>
                   <Ionicons name="camera" size={30} color={isDark ? '#666' : '#999'} />
                   <ThemedText style={[styles.uploadText, { color: isDark ? '#666' : '#999' }]}>
-                    {documentType === 'Passport' ? 'Not required for Passport' : 'Tap to upload back image'}
+                    Tap to upload back image
                   </ThemedText>
                   <ThemedText style={[styles.uploadSubtext, { color: isDark ? '#666' : '#999' }]}>JPG, PNG • Max 5MB</ThemedText>
                 </View>
