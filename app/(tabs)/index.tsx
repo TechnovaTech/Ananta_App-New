@@ -92,6 +92,11 @@ export default function HomeScreen() {
     { id: 2, title: 'Jazz Evening', user: 'Mike Johnson', location: 'USA', listeners: '850', image: require('@/assets/images/h2.png.png') },
     { id: 3, title: 'Podcast Talk', user: 'Emma Davis', location: 'UK', listeners: '2.1K', image: require('@/assets/images/h3.png.png') },
     { id: 4, title: 'Music Lounge', user: 'Alex Chen', location: 'Canada', listeners: '950', image: require('@/assets/images/h4.png.png') },
+    { id: 5, title: 'Night Stories', user: 'Lisa Garcia', location: 'Spain', listeners: '1.5K', image: require('@/assets/images/h1.png.png') },
+    { id: 6, title: 'Tech Talk', user: 'David Brown', location: 'Germany', listeners: '780', image: require('@/assets/images/h2.png.png') },
+    { id: 7, title: 'Music Mix', user: 'Anna Smith', location: 'France', listeners: '1.1K', image: require('@/assets/images/h3.png.png') },
+    { id: 8, title: 'Daily News', user: 'Tom Wilson', location: 'Australia', listeners: '920', image: require('@/assets/images/h4.png.png') },
+    { id: 9, title: 'Chill Vibes', user: 'Maria Garcia', location: 'Mexico', listeners: '1.3K', image: require('@/assets/images/h1.png.png') },
   ];
 
 
