@@ -88,8 +88,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="leaderboard"
         options={{
-          title: 'Leaderboard',
-          tabBarIcon: ({ color }) => <TrophyIcon color={color} />,
+          href: null,
         }}
       />
       <Tabs.Screen

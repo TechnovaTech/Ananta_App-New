@@ -109,15 +109,15 @@ export default function ProfileScreen() {
             <Text style={[styles.actionText, { color: isDark ? 'white' : '#333' }]}>Live Data</Text>
           </TouchableOpacity>
           
-          <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/messages')}>
+          <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/settings')}>
             <View style={[styles.actionIcon, { backgroundColor: '#127d96' }]}>
-              <Ionicons name="chatbubbles-outline" size={24} color="white" />
+              <Ionicons name="settings-outline" size={24} color="white" />
             </View>
-            <Text style={[styles.actionText, { color: isDark ? 'white' : '#333' }]}>Messages</Text>
+            <Text style={[styles.actionText, { color: isDark ? 'white' : '#333' }]}>Settings</Text>
           </TouchableOpacity>
         </View>
         
-        {/* Second row - 3 icons */}
+        {/* Second row - 2 icons */}
         <View style={styles.actionRow}>
           <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/post')}>
             <View style={[styles.actionIcon, { backgroundColor: '#127d96' }]}>
@@ -139,6 +139,13 @@ export default function ProfileScreen() {
             </View>
             <Text style={[styles.actionText, { color: isDark ? 'white' : '#333' }]}>Recharge</Text>
           </TouchableOpacity>
+        </View>
+        
+        {/* Third row - empty */}
+        <View style={styles.actionRow}>
+          <View style={styles.actionButton}></View>
+          <View style={styles.actionButton}></View>
+          <View style={styles.actionButton}></View>
         </View>
       </View>
 

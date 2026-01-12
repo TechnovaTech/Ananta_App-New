@@ -17,47 +17,65 @@ export default function MessagesScreen() {
     {
       id: 1,
       name: 'John Doe',
-      lastMessage: 'Hey! How are you doing?',
-      time: '2:30 PM',
-      unread: 2,
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face',
+      lastMessage: 'Hey! How are you doing today?',
+      time: 'Just now',
+      unread: 3,
+      avatar: require('@/assets/images/h1.png.png'),
       isOnline: true
     },
     {
       id: 2,
       name: 'Sarah Wilson',
-      lastMessage: 'Thanks for the help yesterday!',
-      time: '1:45 PM',
-      unread: 0,
-      avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=50&h=50&fit=crop&crop=face',
+      lastMessage: 'Good morning! Ready for today\'s meeting?',
+      time: '5 min ago',
+      unread: 1,
+      avatar: require('@/assets/images/h2.png.png'),
       isOnline: true
     },
     {
       id: 3,
       name: 'Mike Johnson',
-      lastMessage: 'See you tomorrow at the meeting',
-      time: '12:20 PM',
-      unread: 1,
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop&crop=face',
+      lastMessage: 'Can we reschedule today\'s call?',
+      time: '15 min ago',
+      unread: 2,
+      avatar: require('@/assets/images/h3.png.png'),
       isOnline: false
     },
     {
       id: 4,
       name: 'Emma Davis',
-      lastMessage: 'Can you send me the documents?',
-      time: '11:30 AM',
+      lastMessage: 'Today\'s presentation went great!',
+      time: '1 hour ago',
       unread: 0,
-      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop&crop=face',
+      avatar: require('@/assets/images/h4.png.png'),
       isOnline: true
     },
     {
       id: 5,
       name: 'Alex Brown',
-      lastMessage: 'Great job on the presentation!',
-      time: 'Yesterday',
-      unread: 0,
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=50&h=50&fit=crop&crop=face',
+      lastMessage: 'Let\'s catch up later today',
+      time: '2 hours ago',
+      unread: 1,
+      avatar: require('@/assets/images/h1.png.png'),
       isOnline: false
+    },
+    {
+      id: 6,
+      name: 'Lisa Garcia',
+      lastMessage: 'Today\'s weather is perfect for a walk',
+      time: '3 hours ago',
+      unread: 0,
+      avatar: require('@/assets/images/h2.png.png'),
+      isOnline: true
+    },
+    {
+      id: 7,
+      name: 'David Chen',
+      lastMessage: 'Happy to help with today\'s project',
+      time: '4 hours ago',
+      unread: 2,
+      avatar: require('@/assets/images/h3.png.png'),
+      isOnline: true
     },
   ];
 
@@ -80,8 +98,7 @@ export default function MessagesScreen() {
             borderBottomColor: isDark ? '#555' : '#f0f0f0'
           }]}>
             <View style={styles.avatarContainer}>
-              <Image source={{ uri: conversation.avatar }} style={styles.avatar} />
-              {conversation.isOnline && <View style={[styles.onlineIndicator, { borderColor: isDark ? '#333' : 'white' }]} />}
+              <Image source={conversation.avatar} style={styles.avatar} />
             </View>
             
             <View style={styles.conversationContent}>

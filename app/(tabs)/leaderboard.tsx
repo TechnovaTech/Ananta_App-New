@@ -40,7 +40,25 @@ export default function LeaderboardScreen() {
     { id: 6, name: 'Lisa Anderson', location: 'Jaipur, India', coins: 21000, rank: 6, color: '#D4AF37' },
   ];
 
-  const currentData = activeTab === 'earning' ? earningData : liveData;
+  const messageData = [
+    { id: 1, name: 'Maria Garcia', location: 'Rajkot, Gujarat, India', coins: 28500, rank: 1, color: '#D4AF37', messages: 1250, lastMessage: 'Good morning! Ready for today\'s meeting?' },
+    { id: 2, name: 'Tom Wilson', location: 'Vadodara, India', coins: 26000, rank: 2, color: '#C0C0C0', messages: 1180, lastMessage: 'Can we reschedule today\'s call?' },
+    { id: 3, name: 'Anna Smith', location: 'Surat, Gujarat, India', coins: 23500, rank: 3, color: '#CD7F32', messages: 1050, lastMessage: 'Today\'s presentation went great!' },
+    { id: 4, name: 'Peter Jones', location: 'Gandhinagar, India', coins: 21000, rank: 4, color: '#D4AF37', messages: 980, lastMessage: 'Let\'s catch up later today' },
+    { id: 5, name: 'Lucy Brown', location: 'Bhavnagar, India', coins: 19500, rank: 5, color: '#D4AF37', messages: 890, lastMessage: 'Happy to help with today\'s project' },
+    { id: 6, name: 'Mark Davis', location: 'Anand, India', coins: 17800, rank: 6, color: '#D4AF37', messages: 820, lastMessage: 'Today\'s weather is perfect for a walk' },
+  ];
+
+  const getCurrentData = () => {
+    switch(activeTab) {
+      case 'earning': return earningData;
+      case 'live': return liveData;
+      case 'message': return messageData;
+      default: return earningData;
+    }
+  };
+
+  const currentData = getCurrentData();
 
   const avatars = [
     require('@/assets/images/h1.png.png'),
@@ -61,7 +79,7 @@ export default function LeaderboardScreen() {
         </View>
       </View>
 
-      {/* Main Navigation - Earning/Live */}
+      {/* Main Navigation - Earning/Live/Message */}
       <View style={[styles.mainNavContainer, { backgroundColor: isDark ? '#1a1a1a' : 'white', borderBottomColor: isDark ? '#333' : '#f0f0f0' }]}>
         <TouchableOpacity 
           style={[styles.mainNavTab, activeTab === 'earning' && styles.activeMainNav]}
@@ -74,6 +92,12 @@ export default function LeaderboardScreen() {
           onPress={() => setActiveTab('live')}
         >
           <ThemedText style={[styles.mainNavText, { color: isDark ? '#ccc' : '#666' }, activeTab === 'live' && styles.activeMainNavText]}>Live</ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.mainNavTab, activeTab === 'message' && styles.activeMainNav]}
+          onPress={() => setActiveTab('message')}
+        >
+          <ThemedText style={[styles.mainNavText, { color: isDark ? '#ccc' : '#666' }, activeTab === 'message' && styles.activeMainNavText]}>Message</ThemedText>
         </TouchableOpacity>
       </View>
 
@@ -102,56 +126,79 @@ export default function LeaderboardScreen() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {currentData.map((user, index) => (
           <View key={user.id} style={styles.userCard}>
-            {user.rank <= 3 ? (
-              <LinearGradient
-                colors={[user.color, `${user.color}80`]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.gradientCard}
+            {activeTab === 'message' ? (
+              // Simple Message UI Layout
+              <TouchableOpacity 
+                style={[styles.messageCard, { backgroundColor: isDark ? '#2a2a2a' : 'white' }]}
+                onPress={() => router.push('/messages')}
               >
-                <View style={styles.leftRankSection}>
-                  <ThemedText style={styles.leftRankNumber}>{user.rank}</ThemedText>
-                </View>
-                <Image source={avatars[index]} style={styles.userImage} />
-                <View style={styles.userInfo}>
-                  <ThemedText style={styles.userName}>@{user.name}</ThemedText>
-                  <ThemedText style={styles.userLocation}>{user.location}</ThemedText>
-                  <View style={styles.coinBadge}>
-                    <View style={styles.coinIcon}>
-                      <ThemedText style={styles.dollarSign}>$</ThemedText>
-                    </View>
-                    <ThemedText style={styles.coinAmount}>{user.coins}</ThemedText>
+                <Image source={avatars[index % avatars.length]} style={styles.messageAvatar} />
+                <View style={styles.messageInfo}>
+                  <View style={styles.messageHeader}>
+                    <ThemedText style={[styles.messageUserName, { color: isDark ? 'white' : '#333' }]}>{user.name}</ThemedText>
+                    <ThemedText style={[styles.messageTime, { color: isDark ? '#888' : '#999' }]}>Just now</ThemedText>
                   </View>
+                  <ThemedText style={[styles.lastMessage, { color: isDark ? '#aaa' : '#666' }]} numberOfLines={1}>{user.lastMessage}</ThemedText>
                 </View>
-                <View style={styles.rightSection}>
-                  <View style={styles.trophySection}>
-                    <View style={styles.trophyContainer}>
-                      <ThemedText style={styles.trophyIcon}>🏆</ThemedText>
-                    </View>
+                {user.rank <= 3 && (
+                  <View style={styles.unreadBadge}>
+                    <ThemedText style={styles.unreadCount}>{user.rank}</ThemedText>
                   </View>
-                </View>
-              </LinearGradient>
+                )}
+              </TouchableOpacity>
             ) : (
-              <View style={[styles.solidCard, { backgroundColor: user.color }]}>
-                <Image source={avatars[index]} style={styles.userImage} />
-                <View style={styles.userInfo}>
-                  <ThemedText style={styles.userName}>@{user.name}</ThemedText>
-                  <ThemedText style={styles.userLocation}>{user.location}</ThemedText>
-                  <View style={styles.coinBadge}>
-                    <View style={styles.coinIcon}>
-                      <ThemedText style={styles.dollarSign}>$</ThemedText>
+              // Original UI Layout for Earning and Live
+              user.rank <= 3 ? (
+                <LinearGradient
+                  colors={[user.color, `${user.color}80`]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.gradientCard}
+                >
+                  <View style={styles.leftRankSection}>
+                    <ThemedText style={styles.leftRankNumber}>{user.rank}</ThemedText>
+                  </View>
+                  <Image source={avatars[index]} style={styles.userImage} />
+                  <View style={styles.userInfo}>
+                    <ThemedText style={styles.userName}>@{user.name}</ThemedText>
+                    <ThemedText style={styles.userLocation}>{user.location}</ThemedText>
+                    <View style={styles.coinBadge}>
+                      <View style={styles.coinIcon}>
+                        <ThemedText style={styles.dollarSign}>$</ThemedText>
+                      </View>
+                      <ThemedText style={styles.coinAmount}>{user.coins}</ThemedText>
                     </View>
-                    <ThemedText style={styles.coinAmount}>{user.coins}</ThemedText>
+                  </View>
+                  <View style={styles.rightSection}>
+                    <View style={styles.trophySection}>
+                      <View style={styles.trophyContainer}>
+                        <ThemedText style={styles.trophyIcon}>🏆</ThemedText>
+                      </View>
+                    </View>
+                  </View>
+                </LinearGradient>
+              ) : (
+                <View style={[styles.solidCard, { backgroundColor: user.color }]}>
+                  <Image source={avatars[index]} style={styles.userImage} />
+                  <View style={styles.userInfo}>
+                    <ThemedText style={styles.userName}>@{user.name}</ThemedText>
+                    <ThemedText style={styles.userLocation}>{user.location}</ThemedText>
+                    <View style={styles.coinBadge}>
+                      <View style={styles.coinIcon}>
+                        <ThemedText style={styles.dollarSign}>$</ThemedText>
+                      </View>
+                      <ThemedText style={styles.coinAmount}>{user.coins}</ThemedText>
+                    </View>
+                  </View>
+                  <View style={styles.rightSection}>
+                    <View style={styles.trophySection}>
+                      <View style={styles.trophyContainer}>
+                        <ThemedText style={styles.trophyIcon}>🏆</ThemedText>
+                      </View>
+                    </View>
                   </View>
                 </View>
-                <View style={styles.rightSection}>
-                  <View style={styles.trophySection}>
-                    <View style={styles.trophyContainer}>
-                      <ThemedText style={styles.trophyIcon}>🏆</ThemedText>
-                    </View>
-                  </View>
-                </View>
-              </View>
+              )
             )}
           </View>
         ))}
@@ -440,5 +487,53 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
     borderWidth: 1,
     borderColor: '#E0E0E0',
+  },
+  messageCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  messageAvatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 15,
+  },
+  messageInfo: {
+    flex: 1,
+  },
+  messageHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  messageUserName: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  messageTime: {
+    fontSize: 12,
+    color: '#999',
+  },
+  lastMessage: {
+    fontSize: 14,
+    color: '#666',
+  },
+  unreadBadge: {
+    backgroundColor: '#127d96',
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 6,
+  },
+  unreadCount: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
 });

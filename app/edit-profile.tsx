@@ -21,16 +21,10 @@ export default function EditProfileScreen() {
   const { profileData, updateProfile } = useProfile();
   const { isDark } = useTheme();
   const [profileImage, setProfileImage] = useState(profileData.profilePhoto || profileData.profileImage);
-  const [name, setName] = useState(profileData.name);
   const [bio, setBio] = useState(profileData.bio);
   const [location, setLocation] = useState(profileData.location);
   const [gender, setGender] = useState(profileData.gender);
   const [birthday, setBirthday] = useState(profileData.birthday);
-  const [addressLine1, setAddressLine1] = useState(profileData.addressLine1);
-  const [city, setCity] = useState(profileData.city);
-  const [state, setState] = useState(profileData.state);
-  const [country, setCountry] = useState(profileData.country);
-  const [pinCode, setPinCode] = useState(profileData.pinCode);
   const [userName, setUserName] = useState(profileData.UserName);
 
   const pickImage = async () => {
@@ -48,18 +42,12 @@ export default function EditProfileScreen() {
 
   const saveProfile = () => {
     updateProfile({
-      name,
       bio,
       location,
       profileImage,
       profilePhoto: profileImage,
       gender,
       birthday,
-      addressLine1,
-      city,
-      state,
-      country,
-      pinCode,
       UserName: userName
     });
     router.back();
@@ -113,21 +101,6 @@ export default function EditProfileScreen() {
           </View>
           
           <View style={styles.fieldContainer}>
-            <Text style={[styles.fieldLabel, { color: isDark ? '#ccc' : '#333' }]}>Name :</Text>
-            <TextInput
-              style={[styles.textInput, { 
-                backgroundColor: isDark ? '#444' : '#e9ecef',
-                color: isDark ? 'white' : '#333',
-                borderColor: isDark ? '#555' : '#127d96'
-              }]}
-              value={name}
-              onChangeText={setName}
-              placeholder="Enter your name"
-              placeholderTextColor={isDark ? '#888' : '#666'}
-            />
-          </View>
-          
-          <View style={styles.fieldContainer}>
             <Text style={[styles.fieldLabel, { color: isDark ? '#ccc' : '#333' }]}>Gender :</Text>
             <TextInput
               style={[styles.textInput, { 
@@ -170,85 +143,6 @@ export default function EditProfileScreen() {
               placeholder="Enter your bio"
               placeholderTextColor={isDark ? '#888' : '#666'}
               multiline
-            />
-          </View>
-          
-          {/* Address Information */}
-          <Text style={[styles.sectionTitle, { color: isDark ? 'white' : '#333' }]}>Address Information</Text>
-          
-          <View style={styles.fieldContainer}>
-            <Text style={[styles.fieldLabel, { color: isDark ? '#ccc' : '#333' }]}>Address Line 1 :</Text>
-            <TextInput
-              style={[styles.textInput, { 
-                backgroundColor: isDark ? '#444' : '#e9ecef',
-                color: isDark ? 'white' : '#333',
-                borderColor: isDark ? '#555' : '#127d96'
-              }]}
-              value={addressLine1}
-              onChangeText={setAddressLine1}
-              placeholder="Enter your address"
-              placeholderTextColor={isDark ? '#888' : '#666'}
-            />
-          </View>
-          
-          <View style={styles.fieldContainer}>
-            <Text style={[styles.fieldLabel, { color: isDark ? '#ccc' : '#333' }]}>City :</Text>
-            <TextInput
-              style={[styles.textInput, { 
-                backgroundColor: isDark ? '#444' : '#e9ecef',
-                color: isDark ? 'white' : '#333',
-                borderColor: isDark ? '#555' : '#127d96'
-              }]}
-              value={city}
-              onChangeText={setCity}
-              placeholder="Enter your city"
-              placeholderTextColor={isDark ? '#888' : '#666'}
-            />
-          </View>
-          
-          <View style={styles.fieldContainer}>
-            <Text style={[styles.fieldLabel, { color: isDark ? '#ccc' : '#333' }]}>State :</Text>
-            <TextInput
-              style={[styles.textInput, { 
-                backgroundColor: isDark ? '#444' : '#e9ecef',
-                color: isDark ? 'white' : '#333',
-                borderColor: isDark ? '#555' : '#127d96'
-              }]}
-              value={state}
-              onChangeText={setState}
-              placeholder="Enter your state"
-              placeholderTextColor={isDark ? '#888' : '#666'}
-            />
-          </View>
-          
-          <View style={styles.fieldContainer}>
-            <Text style={[styles.fieldLabel, { color: isDark ? '#ccc' : '#333' }]}>Country :</Text>
-            <TextInput
-              style={[styles.textInput, { 
-                backgroundColor: isDark ? '#444' : '#e9ecef',
-                color: isDark ? 'white' : '#333',
-                borderColor: isDark ? '#555' : '#127d96'
-              }]}
-              value={country}
-              onChangeText={setCountry}
-              placeholder="Enter your country"
-              placeholderTextColor={isDark ? '#888' : '#666'}
-            />
-          </View>
-          
-          <View style={styles.fieldContainer}>
-            <Text style={[styles.fieldLabel, { color: isDark ? '#ccc' : '#333' }]}>Pin Code :</Text>
-            <TextInput
-              style={[styles.textInput, { 
-                backgroundColor: isDark ? '#444' : '#e9ecef',
-                color: isDark ? 'white' : '#333',
-                borderColor: isDark ? '#555' : '#127d96'
-              }]}
-              value={pinCode}
-              onChangeText={setPinCode}
-              placeholder="Enter your pin code"
-              placeholderTextColor={isDark ? '#888' : '#666'}
-              keyboardType="numeric"
             />
           </View>
           

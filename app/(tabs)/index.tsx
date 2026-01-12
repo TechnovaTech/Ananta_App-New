@@ -94,16 +94,6 @@ export default function HomeScreen() {
     { id: 4, title: 'Music Lounge', user: 'Alex Chen', location: 'Canada', listeners: '950', image: require('@/assets/images/h4.png.png') },
   ];
 
-  const followersData = [
-    { id: 1, name: 'Sarah Wilson', username: '@sarah_w', image: require('@/assets/images/h1.png.png') },
-    { id: 2, name: 'Mike Johnson', username: '@mike_j', image: require('@/assets/images/h2.png.png') },
-    { id: 3, name: 'Emma Davis', username: '@emma_d', image: require('@/assets/images/h3.png.png') },
-  ];
-
-  const followingData = [
-    { id: 1, name: 'Alex Chen', username: '@alex_c', image: require('@/assets/images/h4.png.png') },
-    { id: 2, name: 'Rachel James', username: '@rachel_j', image: require('@/assets/images/h1.png.png') },
-  ];
 
   useEffect(() => {
     const leftCardInterval = setInterval(() => {
@@ -130,12 +120,6 @@ export default function HomeScreen() {
           >
             <SearchIcon color="#127D96" isDark={isDark} />
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.iconButton}
-            onPress={() => router.push('/settings')}
-          >
-            <SettingsIcon color="#127D96" isDark={isDark} />
-          </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/notification')}>
             <BellIcon color="#127D96" isDark={isDark} />
           </TouchableOpacity>
@@ -157,18 +141,6 @@ export default function HomeScreen() {
           onPress={() => setActiveTab('audio')}
         >
           <ThemedText style={[styles.tabText, { color: isDark ? '#ccc' : '#666' }, activeTab === 'audio' && styles.activeTabText]}>Audio Live</ThemedText>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.tab}
-          onPress={() => router.push('/followers')}
-        >
-          <ThemedText style={[styles.tabText, { color: isDark ? '#ccc' : '#666' }]}>Followers</ThemedText>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.tab}
-          onPress={() => router.push('/following')}
-        >
-          <ThemedText style={[styles.tabText, { color: isDark ? '#ccc' : '#666' }]}>Following</ThemedText>
         </TouchableOpacity>
       </View>
       

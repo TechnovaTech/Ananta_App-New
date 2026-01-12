@@ -85,6 +85,14 @@ const BlockIcon = () => (
   </Svg>
 );
 
+const LeaderboardIcon = () => (
+  <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <Path d="M7 14L12 9L17 14H7Z" fill="#127D96"/>
+    <Path d="M16 17H8V15H16V17ZM14 13H10V11H14V13ZM12 9H12V7H12V9Z" fill="#127D96"/>
+    <Path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19Z" fill="#127D96"/>
+  </Svg>
+);
+
 const BandIcon = () => (
   <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
     <Path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM15.5 8L12 11.5L8.5 8L10 6.5L12 8.5L14 6.5L15.5 8ZM8.5 16L12 12.5L15.5 16L14 17.5L12 15.5L10 17.5L8.5 16Z" fill="#127D96"/>
@@ -102,9 +110,10 @@ export default function SettingsScreen() {
     { id: 5, title: 'Room admin', icon: <AdminIcon /> },
     { id: 6, title: 'Inventory & Back Pack', icon: <BackpackIcon /> },
     { id: 7, title: 'Invitation Rewards', icon: <GiftIcon /> },
-    { id: 8, title: 'Block', icon: <BlockIcon /> },
-    { id: 9, title: 'Band', icon: <BandIcon /> },
-    { id: 10, title: 'Logout', icon: <LogoutIcon /> },
+    { id: 8, title: 'Leaderboard', icon: <LeaderboardIcon /> },
+    { id: 9, title: 'Block', icon: <BlockIcon /> },
+    { id: 10, title: 'Band', icon: <BandIcon /> },
+    { id: 11, title: 'Logout', icon: <LogoutIcon /> },
   ];
 
   return (
@@ -142,6 +151,8 @@ export default function SettingsScreen() {
                 router.replace('/auth/login');
               } else if (item.title === 'Invitation Rewards') {
                 router.push('/invitation-rewards');
+              } else if (item.title === 'Leaderboard') {
+                router.push('/(tabs)/leaderboard');
               } else if (item.title === 'Block') {
                 router.push('/block');
               } else if (item.title === 'Band') {

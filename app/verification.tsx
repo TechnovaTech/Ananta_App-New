@@ -28,7 +28,6 @@ export default function VerificationScreen() {
   const documentTypes = [
     { id: 'aadhar', name: 'Aadhar Card', icon: 'card-outline' },
     { id: 'pan', name: 'PAN Card', icon: 'document-outline' },
-    { id: 'license', name: 'Driving License', icon: 'car-outline' },
   ];
 
   const pickDocument = async () => {
