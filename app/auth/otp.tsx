@@ -12,6 +12,7 @@ const { width, height } = Dimensions.get('window');
 
 export default function OTPScreen() {
   const [otp, setOtp] = useState(['', '', '', '', '']);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
   const [fontsLoaded] = useFonts({
@@ -82,12 +83,22 @@ export default function OTPScreen() {
               ))}
             </View>
             
+            <TouchableOpacity style={styles.termsContainer} onPress={() => setTermsAccepted(!termsAccepted)}>
+              <View style={[styles.checkbox, termsAccepted && styles.checkboxChecked]}>
+                {termsAccepted && <Ionicons name="checkmark" size={16} color="white" />}
+              </View>
+              <ThemedText style={styles.termsText}>
+                I agree to the <ThemedText style={styles.termsLink}>Terms & Conditions</ThemedText>
+              </ThemedText>
+            </TouchableOpacity>
+            
             <TouchableOpacity 
-              style={styles.verifyButtonContainer}
-              onPress={() => router.push('/auth/profile')}
+              style={[styles.verifyButtonContainer, !termsAccepted && styles.disabledButton]}
+              onPress={() => termsAccepted && router.push('/auth/profile')}
+              disabled={!termsAccepted}
             >
               <LinearGradient
-                colors={['#127d96', '#15a3c7']}
+                colors={termsAccepted ? ['#127d96', '#15a3c7'] : ['#666', '#888']}
                 style={styles.verifyButton}
               >
                 <ThemedText style={styles.buttonText}>Verify OTP</ThemedText>
@@ -276,5 +287,39 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontFamily: 'Inter_700Bold',
     textDecorationLine: 'underline',
+  },
+  termsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: height * 0.02,
+    paddingHorizontal: width * 0.02,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.8)',
+    borderRadius: 4,
+    marginRight: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkboxChecked: {
+    backgroundColor: '#127d96',
+    borderColor: '#127d96',
+  },
+  termsText: {
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: width * 0.035,
+    fontFamily: 'Inter_400Regular',
+    flex: 1,
+  },
+  termsLink: {
+    color: 'white',
+    fontWeight: '600',
+    textDecorationLine: 'underline',
+  },
+  disabledButton: {
+    opacity: 0.6,
   },
 });
