@@ -174,7 +174,7 @@ export default function HomeScreen() {
               <View style={styles.leftColumn}>
                 {(() => {
                   const currentData = activeTab === 'video' ? videos : audioStreams;
-                  const item = currentData[currentLeftCardIndex];
+                  const item = currentData[currentLeftCardIndex % currentData.length];
                   return (
                     <TouchableOpacity 
                       key={item.id} 
@@ -188,7 +188,7 @@ export default function HomeScreen() {
                               user: item.user,
                               location: item.location,
                               views: (item as any).views,
-                              image: JSON.stringify(item.image)
+                              image: item.id.toString()
                             }
                           });
                         } else {
@@ -199,7 +199,7 @@ export default function HomeScreen() {
                               user: item.user,
                               location: item.location,
                               listeners: (item as any).listeners,
-                              image: JSON.stringify(item.image)
+                              image: item.id.toString()
                             }
                           });
                         }
@@ -263,7 +263,7 @@ export default function HomeScreen() {
                             user: item.user,
                             location: item.location,
                             views: (item as any).views,
-                            image: JSON.stringify(item.image)
+                            image: item.id.toString()
                           }
                         });
                       } else {
@@ -274,7 +274,7 @@ export default function HomeScreen() {
                             user: item.user,
                             location: item.location,
                             listeners: (item as any).listeners,
-                            image: JSON.stringify(item.image)
+                            image: item.id.toString()
                           }
                         });
                       }
@@ -322,7 +322,7 @@ export default function HomeScreen() {
                           user: item.user,
                           location: item.location,
                           views: (item as any).views,
-                          image: JSON.stringify(item.image)
+                          image: item.id.toString()
                         }
                       });
                     } else {
@@ -333,7 +333,7 @@ export default function HomeScreen() {
                           user: item.user,
                           location: item.location,
                           listeners: (item as any).listeners,
-                          image: JSON.stringify(item.image)
+                          image: item.id.toString()
                         }
                       });
                     }
