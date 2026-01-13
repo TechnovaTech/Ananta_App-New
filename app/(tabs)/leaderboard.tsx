@@ -22,23 +22,41 @@ export default function LeaderboardScreen() {
   const [activeTab, setActiveTab] = useState('earning');
   const [timeFilter, setTimeFilter] = useState('today');
 
-  const earningData = [
-    { id: 1, name: 'Rachel James', location: 'Jamnagar, Gujarat, India', coins: 30600, rank: 1, color: '#D4AF37' },
-    { id: 2, name: 'Micale clarke', location: 'Gujarat, India', coins: 29000, rank: 2, color: '#C0C0C0' },
-    { id: 3, name: 'Sergio martin', location: 'Ahmedabad, Gujarat, India', coins: 24893, rank: 3, color: '#CD7F32' },
-    { id: 4, name: 'John Doe', location: 'Mumbai, India', coins: 22000, rank: 4, color: '#D4AF37' },
-    { id: 5, name: 'Jane Smith', location: 'Delhi, India', coins: 20000, rank: 5, color: '#D4AF37' },
-    { id: 6, name: 'Mike Wilson', location: 'Pune, India', coins: 18000, rank: 6, color: '#D4AF37' },
-  ];
+  const earningData = {
+    today: [
+      { id: 1, name: 'Rachel James', location: 'Jamnagar, Gujarat, India', coins: 30600, rank: 1, color: '#D4AF37' },
+      { id: 2, name: 'Micale clarke', location: 'Gujarat, India', coins: 29000, rank: 2, color: '#C0C0C0' },
+      { id: 3, name: 'Sergio martin', location: 'Ahmedabad, Gujarat, India', coins: 24893, rank: 3, color: '#CD7F32' },
+    ],
+    weekly: [
+      { id: 1, name: 'Alex Johnson', location: 'Bangalore, India', coins: 85000, rank: 1, color: '#D4AF37' },
+      { id: 2, name: 'Sarah Connor', location: 'Chennai, India', coins: 78000, rank: 2, color: '#C0C0C0' },
+      { id: 3, name: 'David Brown', location: 'Hyderabad, India', coins: 72000, rank: 3, color: '#CD7F32' },
+    ],
+    monthly: [
+      { id: 1, name: 'Emma Davis', location: 'Kolkata, India', coins: 150000, rank: 1, color: '#D4AF37' },
+      { id: 2, name: 'Chris Evans', location: 'Surat, India', coins: 142000, rank: 2, color: '#C0C0C0' },
+      { id: 3, name: 'Lisa Anderson', location: 'Jaipur, India', coins: 138000, rank: 3, color: '#CD7F32' },
+    ]
+  };
 
-  const liveData = [
-    { id: 1, name: 'Alex Johnson', location: 'Bangalore, India', coins: 35000, rank: 1, color: '#D4AF37' },
-    { id: 2, name: 'Sarah Connor', location: 'Chennai, India', coins: 32000, rank: 2, color: '#C0C0C0' },
-    { id: 3, name: 'David Brown', location: 'Hyderabad, India', coins: 28000, rank: 3, color: '#CD7F32' },
-    { id: 4, name: 'Emma Davis', location: 'Kolkata, India', coins: 25000, rank: 4, color: '#D4AF37' },
-    { id: 5, name: 'Chris Evans', location: 'Surat, India', coins: 23000, rank: 5, color: '#D4AF37' },
-    { id: 6, name: 'Lisa Anderson', location: 'Jaipur, India', coins: 21000, rank: 6, color: '#D4AF37' },
-  ];
+  const liveData = {
+    today: [
+      { id: 1, name: 'Mike Johnson', location: 'Mumbai, India', coins: 45000, rank: 1, color: '#D4AF37' },
+      { id: 2, name: 'Jane Smith', location: 'Delhi, India', coins: 42000, rank: 2, color: '#C0C0C0' },
+      { id: 3, name: 'Tom Wilson', location: 'Pune, India', coins: 38000, rank: 3, color: '#CD7F32' },
+    ],
+    weekly: [
+      { id: 1, name: 'Anna Garcia', location: 'Rajkot, India', coins: 95000, rank: 1, color: '#D4AF37' },
+      { id: 2, name: 'Peter Jones', location: 'Vadodara, India', coins: 88000, rank: 2, color: '#C0C0C0' },
+      { id: 3, name: 'Lucy Brown', location: 'Bhavnagar, India', coins: 82000, rank: 3, color: '#CD7F32' },
+    ],
+    monthly: [
+      { id: 1, name: 'Mark Davis', location: 'Anand, India', coins: 180000, rank: 1, color: '#D4AF37' },
+      { id: 2, name: 'Sophie Miller', location: 'Gandhinagar, India', coins: 175000, rank: 2, color: '#C0C0C0' },
+      { id: 3, name: 'Ryan Taylor', location: 'Ahmedabad, India', coins: 168000, rank: 3, color: '#CD7F32' },
+    ]
+  };
 
   const messageData = [
     { id: 1, name: 'Maria Garcia', location: 'Rajkot, Gujarat, India', coins: 28500, rank: 1, color: '#D4AF37', messages: 1250, lastMessage: 'Good morning! Ready for today\'s meeting?' },
@@ -50,11 +68,8 @@ export default function LeaderboardScreen() {
   ];
 
   const getCurrentData = () => {
-    switch(activeTab) {
-      case 'earning': return earningData;
-      case 'live': return liveData;
-      default: return earningData;
-    }
+    const dataSource = activeTab === 'earning' ? earningData : liveData;
+    return dataSource[timeFilter] || dataSource.today;
   };
 
   const currentData = getCurrentData();
