@@ -110,10 +110,9 @@ export default function SettingsScreen() {
     { id: 5, title: 'Room admin', icon: <AdminIcon /> },
     { id: 6, title: 'Inventory & Back Pack', icon: <BackpackIcon /> },
     { id: 7, title: 'Invitation Rewards', icon: <GiftIcon /> },
-    { id: 8, title: 'Leaderboard', icon: <LeaderboardIcon /> },
-    { id: 9, title: 'Block', icon: <BlockIcon /> },
-    { id: 10, title: 'Band', icon: <BandIcon /> },
-    { id: 11, title: 'Logout', icon: <LogoutIcon /> },
+    { id: 8, title: 'Block', icon: <BlockIcon /> },
+    { id: 9, title: 'Band', icon: <BandIcon /> },
+    { id: 10, title: 'Logout', icon: <LogoutIcon /> },
   ];
 
   return (
@@ -149,10 +148,6 @@ export default function SettingsScreen() {
                 router.push('/back-pack');
               } else if (item.title === 'Logout') {
                 router.replace('/auth/login');
-              } else if (item.title === 'Invitation Rewards') {
-                router.push('/invitation-rewards');
-              } else if (item.title === 'Leaderboard') {
-                router.push('/(tabs)/leaderboard');
               } else if (item.title === 'Block') {
                 router.push('/block');
               } else if (item.title === 'Band') {
