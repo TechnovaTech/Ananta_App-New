@@ -86,9 +86,7 @@ export default function MessagesScreen() {
           <Ionicons name="arrow-back" size={24} color={isDark ? 'white' : '#333'} />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, { color: isDark ? 'white' : '#333' }]}>Messages</Text>
-        <TouchableOpacity>
-          <Ionicons name="create-outline" size={24} color={isDark ? 'white' : '#333'} />
-        </TouchableOpacity>
+        <View style={styles.placeholder} />
       </View>
 
       <ScrollView style={styles.conversationsContainer} showsVerticalScrollIndicator={false}>
@@ -140,6 +138,9 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  placeholder: {
+    width: 24,
   },
   conversationsContainer: {
     flex: 1,
