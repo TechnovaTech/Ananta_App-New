@@ -15,9 +15,9 @@ const HomeIcon = ({ color }: { color: string }) => (
   </Svg>
 );
 
-const TrophyIcon = ({ color }: { color: string }) => (
+const MessageIcon = ({ color }: { color: string }) => (
   <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-    <Path d="M6 9H4.5C3.67157 9 3 9.67157 3 10.5V12C3 12.8284 3.67157 13.5 4.5 13.5H6M18 9H19.5C20.3284 9 21 9.67157 21 10.5V12C21 12.8284 20.3284 13.5 19.5 13.5H18M6 9V7C6 5.89543 6.89543 5 8 5H16C17.1046 5 18 5.89543 18 7V9M6 9V15C6 16.1046 6.89543 17 8 17H16C17.1046 17 18 16.1046 18 15V9M8 21H16M12 17V21" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <Path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
   </Svg>
 );
 
@@ -88,7 +88,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="leaderboard"
         options={{
-          href: null,
+          title: 'Messages',
+          tabBarIcon: ({ color }) => <MessageIcon color={color} />,
+          href: '/messages',
         }}
       />
       <Tabs.Screen

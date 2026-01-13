@@ -53,7 +53,6 @@ export default function LeaderboardScreen() {
     switch(activeTab) {
       case 'earning': return earningData;
       case 'live': return liveData;
-      case 'message': return messageData;
       default: return earningData;
     }
   };
@@ -79,7 +78,7 @@ export default function LeaderboardScreen() {
         </View>
       </View>
 
-      {/* Main Navigation - Earning/Live/Message */}
+      {/* Main Navigation - Earning/Live */}
       <View style={[styles.mainNavContainer, { backgroundColor: isDark ? '#1a1a1a' : 'white', borderBottomColor: isDark ? '#333' : '#f0f0f0' }]}>
         <TouchableOpacity 
           style={[styles.mainNavTab, activeTab === 'earning' && styles.activeMainNav]}
@@ -92,12 +91,6 @@ export default function LeaderboardScreen() {
           onPress={() => setActiveTab('live')}
         >
           <ThemedText style={[styles.mainNavText, { color: isDark ? '#ccc' : '#666' }, activeTab === 'live' && styles.activeMainNavText]}>Live</ThemedText>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={[styles.mainNavTab, activeTab === 'message' && styles.activeMainNav]}
-          onPress={() => setActiveTab('message')}
-        >
-          <ThemedText style={[styles.mainNavText, { color: isDark ? '#ccc' : '#666' }, activeTab === 'message' && styles.activeMainNavText]}>Message</ThemedText>
         </TouchableOpacity>
       </View>
 
@@ -126,35 +119,13 @@ export default function LeaderboardScreen() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {currentData.map((user, index) => (
           <View key={user.id} style={styles.userCard}>
-            {activeTab === 'message' ? (
-              // Simple Message UI Layout
-              <TouchableOpacity 
-                style={[styles.messageCard, { backgroundColor: isDark ? '#2a2a2a' : 'white' }]}
-                onPress={() => router.push('/messages')}
+            {user.rank <= 3 ? (
+              <LinearGradient
+                colors={[user.color, `${user.color}80`]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.gradientCard}
               >
-                <Image source={avatars[index % avatars.length]} style={styles.messageAvatar} />
-                <View style={styles.messageInfo}>
-                  <View style={styles.messageHeader}>
-                    <ThemedText style={[styles.messageUserName, { color: isDark ? 'white' : '#333' }]}>{user.name}</ThemedText>
-                    <ThemedText style={[styles.messageTime, { color: isDark ? '#888' : '#999' }]}>Just now</ThemedText>
-                  </View>
-                  <ThemedText style={[styles.lastMessage, { color: isDark ? '#aaa' : '#666' }]} numberOfLines={1}>{user.lastMessage}</ThemedText>
-                </View>
-                {user.rank <= 3 && (
-                  <View style={styles.unreadBadge}>
-                    <ThemedText style={styles.unreadCount}>{user.rank}</ThemedText>
-                  </View>
-                )}
-              </TouchableOpacity>
-            ) : (
-              // Original UI Layout for Earning and Live
-              user.rank <= 3 ? (
-                <LinearGradient
-                  colors={[user.color, `${user.color}80`]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.gradientCard}
-                >
                   <View style={styles.leftRankSection}>
                     <ThemedText style={styles.leftRankNumber}>{user.rank}</ThemedText>
                   </View>
@@ -198,8 +169,7 @@ export default function LeaderboardScreen() {
                     </View>
                   </View>
                 </View>
-              )
-            )}
+              )}
           </View>
         ))}
       </ScrollView>

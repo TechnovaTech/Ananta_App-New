@@ -15,6 +15,12 @@ const SearchIcon = ({ color, isDark }: { color: string; isDark?: boolean }) => (
   </Svg>
 );
 
+const TrophyIcon = ({ color, isDark }: { color: string; isDark?: boolean }) => (
+  <Svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+    <Path d="M6 9H4.5C3.67157 9 3 9.67157 3 10.5V12C3 12.8284 3.67157 13.5 4.5 13.5H6M18 9H19.5C20.3284 9 21 9.67157 21 10.5V12C21 12.8284 20.3284 13.5 19.5 13.5H18M6 9V7C6 5.89543 6.89543 5 8 5H16C17.1046 5 18 5.89543 18 7V9M6 9V15C6 16.1046 6.89543 17 8 17H16C17.1046 17 18 16.1046 18 15V9M8 21H16M12 17V21" stroke={isDark ? '#127D96' : color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </Svg>
+);
+
 const SettingsIcon = ({ color, isDark }: { color: string; isDark?: boolean }) => (
   <Svg width="20" height="20" viewBox="0 0 24 24" fill="none">
     <Path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke={isDark ? '#127D96' : color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -124,6 +130,12 @@ export default function HomeScreen() {
             onPress={() => router.push('/search')}
           >
             <SearchIcon color="#127D96" isDark={isDark} />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.iconButton}
+            onPress={() => router.push('/leaderboard')}
+          >
+            <TrophyIcon color="#127D96" isDark={isDark} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/notification')}>
             <BellIcon color="#127D96" isDark={isDark} />
